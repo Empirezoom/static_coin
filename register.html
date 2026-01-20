@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Register — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body
+    class="bg-white font-semibold min-h-screen flex items-center justify-center"
+  >
+    <div class="w-full max-w-md p-6 bg-white  rounded shadow">
+      <h2 class="text-2xl font-semibold ">
+        👋 Welcome to ORYX! Create your account
+      </h2>
+      <p class="text-sm font-semibold">
+        Join thousands of traders in the crypto world
+      </p>
+      <form id="registerForm" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-sm text-black dark:text-white"
+            >Full name</label
+          >
+          <input
+            required
+            name="name"
+            type="text"
+            class="mt-1 w-full border border-gray-300  rounded px-3 py-2 bg-white font-semibold"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold">Email</label>
+          <input
+            required
+            name="email"
+            type="email"
+            class="mt-1 w-full border border-gray-300  rounded px-3 py-2 bg-white font-semibold"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold">Password</label>
+          
+          <input
+            required
+            name="password"
+            type="password"
+            class="mt-1 w-full border border-gray-300  rounded px-3 py-2 bg-white font-semibold"
+          />
+        </div>
+        <div class="flex justify-between items-center">
+          <button class="px-4 py-2 bg-white font-semibold rounded">
+            Register
+          </button>
+        </div>
+        <p class="text-sm font-semibold">
+          Already have an account?
+          <a href="/login.html" class="text-indigo-600">Sign in</a>
+        </p>
+      </form>
+    </div>
+    <script src="/js/app.js"></script>
+    <script>
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const form = e.target;
+          const name = form.name.value.trim();
+          const email = form.email.value.trim();
+          const password = form.password.value;
+          if (window.ORYXAuth) {
+            try {
+              ORYXAuth.register({ name, email, password });
+              alert(
+                "Registration complete — confirmation email sent to " + email,
+              );
+              location.href = "/login.html";
+            } catch (err) {
+              alert(err.message);
+            }
+          }
+        });
+    </script>
+  </body>
+</html>

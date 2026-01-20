@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>USDT Wallet — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  </head>
+  <body
+    class="bg-gradient-to-br from-green-400 via-green-500 to-green-600 min-h-screen"
+  >
+    <div class="max-w-4xl mx-auto p-6">
+      <!-- Header with Logo -->
+      <div class="text-center mb-8">
+        <img
+          src="https://cryptologos.cc/logos/tether-usdt-logo.png"
+          alt="USDT Logo"
+          class="w-16 h-16 mx-auto mb-4 rounded-full bg-white p-2 shadow-lg"
+        />
+        <h1 class="text-3xl font-bold text-white">Tether (USDT) Wallet</h1>
+        <p class="text-green-100 mt-2">
+          Manage your USDT transactions securely
+        </p>
+      </div>
+
+      <!-- Balance Card -->
+      <div
+        class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-xl"
+      >
+        <div class="text-center">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">Current Balance</h2>
+          <div class="text-4xl font-extrabold text-green-600" id="usdtBalance">
+            0.00
+          </div>
+          <div class="text-sm text-green-700 mt-1" id="usdtBalanceUsd">
+            $0.00
+          </div>
+          <p class="text-gray-600 mt-1">USDT</p>
+        </div>
+      </div>
+
+      <!-- Address and QR Section -->
+      <div
+        class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-xl"
+      >
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">
+          Your USDT Address
+        </h3>
+        <div class="flex flex-col md:flex-row items-center gap-4">
+          <div class="flex-1">
+            <p class="text-sm text-gray-600 mb-2">Address:</p>
+            <div class="flex items-center gap-2">
+              <code
+                class="flex-1 bg-gray-100 p-3 rounded-lg font-mono text-sm break-all"
+                id="usdtAddress"
+                >—</code
+              >
+              <button
+                id="copyUsdt"
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="flex-shrink-0">
+            <p class="text-sm text-gray-600 mb-2 text-center">QR Code:</p>
+            <canvas
+              id="usdtQr"
+              class="border-2 border-gray-200 rounded-lg"
+            ></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transactions Section -->
+      <div
+        class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-xl"
+      >
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">
+          Recent Transactions
+        </h3>
+        <ul id="usdtTxList" class="space-y-3">
+          <!-- Transactions will be rendered here -->
+        </ul>
+      </div>
+
+      <!-- Send Form -->
+      <div
+        class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-xl"
+      >
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Send USDT</h3>
+        <form id="usdtSendForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Recipient Address</label
+            >
+            <input
+              name="to"
+              type="text"
+              placeholder="0x..."
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Amount (USDT)</label
+            >
+            <input
+              name="amount"
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+          >
+            Send USDT
+          </button>
+        </form>
+      </div>
+
+      <!-- Back Button -->
+      <div class="text-center mt-6">
+        <a
+          href="/wallet.html"
+          class="inline-block bg-white bg-opacity-90 backdrop-blur-sm text-gray-800 px-6 py-3 rounded-lg hover:bg-opacity-100 transition-all shadow-lg font-semibold"
+          >← Back to Wallets</a
+        >
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        const user = ORYXAuth.currentUser();
+        if (!user) {
+          alert("Please login");
+          location.href = "/login.html";
+          return;
+        }
+        const usdt =
+          user.wallet?.usdt || "0x" + ORYXAuth.randomBtcAddress().slice(0, 40);
+        document.getElementById("usdtAddress").textContent = usdt;
+        document.getElementById("usdtBalance").textContent =
+          ORYXAuth.getBalance("usdt").toString();
+        if (window.CryptoPrices && CryptoPrices.updateFiatDisplays)
+          CryptoPrices.updateFiatDisplays();
+        const qr = new QRious({
+          element: document.getElementById("usdtQr"),
+          value: usdt,
+          size: 160,
+        });
+
+        // Copy address
+        document
+          .getElementById("copyUsdt")
+          .addEventListener("click", function () {
+            const txt = document
+              .getElementById("usdtAddress")
+              .textContent.trim();
+            if (!txt || txt === "—") return alert("No address to copy");
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(txt).then(() => {
+                const orig = this.textContent;
+                this.textContent = "Copied!";
+                this.classList.add("bg-green-500");
+                this.classList.remove("bg-blue-500");
+                setTimeout(() => {
+                  this.textContent = orig;
+                  this.classList.remove("bg-green-500");
+                  this.classList.add("bg-blue-500");
+                }, 1500);
+              });
+            } else {
+              const ta = document.createElement("textarea");
+              ta.value = txt;
+              document.body.appendChild(ta);
+              ta.select();
+              try {
+                document.execCommand("copy");
+                alert("Copied");
+              } catch (e) {
+                alert("Copy failed");
+              }
+              ta.remove();
+            }
+          });
+
+        function renderUsdtTx() {
+          const list = document.getElementById("usdtTxList");
+          const txs = ORYXAuth.getTransactions("usdt");
+          list.innerHTML = "";
+          if (txs.length === 0) {
+            list.innerHTML =
+              '<li class="text-slate-500 text-center py-4">No transactions yet</li>';
+            return;
+          }
+          txs.forEach((t) => {
+            const li = document.createElement("li");
+            const dateStr = new Date(t.createdAt).toLocaleString();
+            if (t.type === "send") {
+              li.innerHTML = `<div class='flex justify-between items-center p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg'>
+                <div>
+                  <div class='font-semibold text-red-700'>Sent USDT</div>
+                  <div class='text-sm text-slate-600'>To: ${t.to}</div>
+                  <div class='text-xs text-slate-500'>${dateStr}</div>
+                </div>
+                <div class='text-right'>
+                  <div class='font-bold text-red-700'>-${t.amount} USDT</div>
+                </div>
+              </div>`;
+            } else {
+              li.innerHTML = `<div class='flex justify-between items-center p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg'>
+                <div>
+                  <div class='font-semibold text-green-700'>Received USDT</div>
+                  <div class='text-xs text-slate-500'>${dateStr}</div>
+                </div>
+                <div class='text-right'>
+                  <div class='font-bold text-green-700'>+${t.amount} USDT</div>
+                </div>
+              </div>`;
+            }
+            list.appendChild(li);
+          });
+        }
+        renderUsdtTx();
+
+        document
+          .getElementById("usdtSendForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            const to = e.target.to.value.trim();
+            const amount = Number(e.target.amount.value);
+            if (!to || !amount) return alert("Enter recipient and amount");
+            ORYXAuth.addTransaction("usdt", {
+              id: "tx_" + Date.now(),
+              type: "send",
+              amount,
+              to,
+              createdAt: Date.now(),
+            });
+            alert("Transaction completed");
+            document.getElementById("usdtBalance").textContent =
+              ORYXAuth.getBalance("usdt").toString();
+            renderUsdtTx();
+            e.target.reset();
+          });
+      });
+    </script>
+  </body>
+</html>

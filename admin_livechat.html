@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Live Chat — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      .animate-fade-in {
+        animation: fadeIn 1s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .chat-message {
+        animation: slideIn 0.3s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .conversation-active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen p-6"
+  >
+    <div class="max-w-7xl mx-auto animate-fade-in">
+      <!-- Header -->
+      <div
+        class="bg-gradient-to-r from-green-600 to-teal-600 text-white p-8 rounded-2xl shadow-xl mb-8"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center"
+            >
+              <span class="text-2xl">💬</span>
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold">Live Chat Administration</h1>
+              <p class="text-green-100">
+                Manage user conversations and support requests
+              </p>
+            </div>
+          </div>
+          <a
+            href="/admin_dashboard.html"
+            class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-all duration-300 shadow-lg flex items-center"
+          >
+            <span class="mr-2">📊</span>Dashboard
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Conversations Panel -->
+        <div class="lg:col-span-1">
+          <div
+            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg card-hover h-[600px] flex flex-col"
+          >
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                <span class="mr-3">👥</span>Conversations
+              </h3>
+              <p class="text-sm text-gray-600 mt-1">Active user chats</p>
+            </div>
+            <div class="flex-1 overflow-y-auto">
+              <ul id="convList" class="p-4 space-y-2"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="lg:col-span-2">
+          <div
+            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg card-hover h-[600px] flex flex-col"
+          >
+            <div class="p-6 border-b border-gray-200">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <span class="mr-3">💬</span>Chat Conversation
+                  </h3>
+                  <p id="convTitle" class="text-sm text-gray-600 mt-1">
+                    Select a conversation to start chatting
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="adminChatBox"
+              class="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50"
+            ></div>
+
+            <div class="p-6 border-t border-gray-200">
+              <form id="adminReplyForm" class="space-y-4">
+                <div class="flex gap-3">
+                  <input
+                    name="text"
+                    placeholder="Type your reply..."
+                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all duration-200"
+                  />
+                  <button
+                    type="submit"
+                    class="bg-gradient-to-r from-green-500 to-teal-500 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg flex items-center"
+                  >
+                    <span class="mr-2">✈️</span>Send
+                  </button>
+                </div>
+                <div class="flex items-center gap-3">
+                  <label
+                    for="adminFileInput"
+                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors flex items-center"
+                  >
+                    <span class="mr-2">📎</span>Attach File
+                  </label>
+                  <input
+                    type="file"
+                    id="adminFileInput"
+                    name="file"
+                    class="hidden"
+                  />
+                  <span id="adminFileName" class="text-sm text-gray-600"></span>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Requests Panel -->
+        <div class="lg:col-span-1 space-y-6">
+          <!-- Deposit Requests -->
+          <div
+            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg card-hover"
+          >
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                <span class="mr-3">⬇️</span>Deposits
+              </h3>
+              <p class="text-sm text-gray-600 mt-1">Pending approvals</p>
+            </div>
+            <div class="p-4 max-h-48 overflow-y-auto">
+              <ul id="depList" class="space-y-3"></ul>
+            </div>
+          </div>
+
+          <!-- Withdrawal Requests -->
+          <div
+            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg card-hover"
+          >
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                <span class="mr-3">⬆️</span>Withdrawals
+              </h3>
+              <p class="text-sm text-gray-600 mt-1">Pending approvals</p>
+            </div>
+            <div class="p-4 max-h-48 overflow-y-auto">
+              <ul id="withList" class="space-y-3"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      let selectedUserId = null;
+
+      function loadConversations() {
+        const msgs = ORYXAuth.getChatMessages();
+        // group by userId
+        const byUser = {};
+        msgs.forEach((m) => {
+          const uid = m.userId || "system";
+          byUser[uid] = byUser[uid] || [];
+          byUser[uid].push(m);
+        });
+        const list = document.getElementById("convList");
+        list.innerHTML = "";
+        Object.keys(byUser).forEach((uid) => {
+          const unread = byUser[uid].filter(
+            (m) => m.sender === "user" && !m.read,
+          ).length;
+          const el = document.createElement("li");
+          const isActive = selectedUserId === (uid === "system" ? null : uid);
+          el.innerHTML = `
+            <button data-uid='${uid}' class='w-full text-left p-4 rounded-lg hover:bg-gray-50 transition-colors flex justify-between items-center ${isActive ? "conversation-active" : "bg-white"}'>
+              <div class='flex items-center'>
+                <div class='w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center mr-3'>
+                  <span class='text-white font-semibold text-xs'>${uid === "system" ? "S" : uid.charAt(0).toUpperCase()}</span>
+                </div>
+                <div>
+                  <div class='font-semibold ${isActive ? "text-white" : "text-gray-800"}'>${uid === "system" ? "System" : uid}</div>
+                  <div class='text-xs ${isActive ? "text-indigo-100" : "text-gray-600"}'>${byUser[uid].length} messages</div>
+                </div>
+              </div>
+              ${unread ? `<span class='bg-red-500 text-white text-xs px-2 py-1 rounded-full'>${unread}</span>` : ""}
+            </button>
+          `;
+          el.querySelector("button").addEventListener("click", () => {
+            selectConversation(uid);
+          });
+          list.appendChild(el);
+        });
+      }
+
+      function loadDeposits() {
+        const deps = ORYXAuth.getAllDepositRequests();
+        const list = document.getElementById("depList");
+        list.innerHTML = "";
+        if (deps.length === 0) {
+          list.innerHTML = `
+            <div class="text-center text-gray-500 py-4">
+              <span class="text-2xl mb-2">📭</span>
+              <p class="text-sm">No pending deposits</p>
+            </div>
+          `;
+          return;
+        }
+        deps.forEach((d) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div class='p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors'>
+              <div class='flex items-center justify-between mb-2'>
+                <div class='flex items-center'>
+                  <div class='w-6 h-6 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mr-2'>
+                    <span class='text-white font-semibold text-xs'>${(d.userName || d.userId).charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <div class='font-semibold text-gray-800 text-sm'>${d.userName || d.userId}</div>
+                    <div class='text-xs text-gray-600'>$${d.amount} • ${d.method}</div>
+                  </div>
+                </div>
+                <div class='flex gap-1'>
+                  <button data-id='${d.id}' class='approve bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 transition-colors'>
+                    <span>✅</span>
+                  </button>
+                  <button data-id='${d.id}' class='cancel bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors'>
+                    <span>❌</span>
+                  </button>
+                </div>
+              </div>
+              <div class='text-xs text-gray-500'>Status: <span class='font-medium text-orange-600'>${d.status}</span></div>
+            </div>
+          `;
+          li.querySelector(".approve").addEventListener("click", () => {
+            ORYXAuth.updateDepositStatus(d.id, "completed");
+            loadDeposits();
+          });
+          li.querySelector(".cancel").addEventListener("click", () => {
+            ORYXAuth.updateDepositStatus(d.id, "cancelled");
+            loadDeposits();
+          });
+          list.appendChild(li);
+        });
+
+        // withdrawals
+        const withs = ORYXAuth.getAllWithdrawalRequests();
+        const wlist = document.getElementById("withList");
+        wlist.innerHTML = "";
+        if (withs.length === 0) {
+          wlist.innerHTML = `
+            <div class="text-center text-gray-500 py-4">
+              <span class="text-2xl mb-2">📭</span>
+              <p class="text-sm">No pending withdrawals</p>
+            </div>
+          `;
+          return;
+        }
+        withs.forEach((d) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div class='p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors'>
+              <div class='flex items-center justify-between mb-2'>
+                <div class='flex items-center'>
+                  <div class='w-6 h-6 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center mr-2'>
+                    <span class='text-white font-semibold text-xs'>${(d.userName || d.userId).charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <div class='font-semibold text-gray-800 text-sm'>${d.userName || d.userId}</div>
+                    <div class='text-xs text-gray-600'>$${d.amount} ${d.currency} • ${d.method}</div>
+                  </div>
+                </div>
+                <div class='flex gap-1'>
+                  <button data-id='${d.id}' class='approve bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 transition-colors'>
+                    <span>✅</span>
+                  </button>
+                  <button data-id='${d.id}' class='cancel bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors'>
+                    <span>❌</span>
+                  </button>
+                </div>
+              </div>
+              <div class='text-xs text-gray-500'>Status: <span class='font-medium text-orange-600'>${d.status}</span></div>
+            </div>
+          `;
+          li.querySelector(".approve").addEventListener("click", () => {
+            ORYXAuth.updateWithdrawalStatus(d.id, "completed");
+            loadDeposits();
+          });
+          li.querySelector(".cancel").addEventListener("click", () => {
+            ORYXAuth.updateWithdrawalStatus(d.id, "cancelled");
+            loadDeposits();
+          });
+          wlist.appendChild(li);
+        });
+      }
+
+      function selectConversation(uid) {
+        selectedUserId = uid === "system" ? null : uid;
+        document.getElementById("convTitle").textContent = selectedUserId
+          ? `Chatting with ${selectedUserId}`
+          : "System Messages";
+        renderConversation();
+        loadConversations(); // refresh to show active state
+      }
+
+      function renderConversation() {
+        const box = document.getElementById("adminChatBox");
+        const msgs = ORYXAuth.getChatMessages().filter((m) =>
+          selectedUserId === null
+            ? m.userId === null
+            : m.userId === selectedUserId,
+        );
+        box.innerHTML = "";
+        if (msgs.length === 0) {
+          box.innerHTML = `
+            <div class="text-center text-gray-500 py-8">
+              <span class="text-4xl mb-4">💬</span>
+              <p>No messages in this conversation yet.</p>
+            </div>
+          `;
+          return;
+        }
+        msgs.forEach((m) => {
+          const d = document.createElement("div");
+          d.className = `chat-message ${m.sender === "admin" ? "flex justify-end" : "flex justify-start"}`;
+          let content = `<div class='max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+            m.sender === "admin"
+              ? "bg-gradient-to-r from-green-500 to-teal-500 text-white"
+              : "bg-white text-gray-800 border border-gray-200"
+          }'>`;
+          if (m.text) content += `<div class='mb-2'>${m.text}</div>`;
+          if (m.attachment) {
+            const name = m.attachment.name || "attachment";
+            const dataUrl = m.attachment.dataUrl;
+            if (dataUrl && dataUrl.startsWith("data:image")) {
+              content += `<div class='mb-2'><img src='${dataUrl}' alt='${name}' class='w-32 h-auto rounded-lg shadow-sm' /></div>`;
+            }
+            content += `<div class='mb-2'><a href='${dataUrl}' download='${name}' class='underline text-sm hover:text-blue-600'>📎 ${name}</a></div>`;
+          }
+          content += `<div class='text-xs opacity-75'>${new Date(m.createdAt).toLocaleTimeString()}</div></div>`;
+          d.innerHTML = content;
+          box.appendChild(d);
+        });
+        // mark messages read when opening conversation
+        ORYXAuth.markMessagesRead(selectedUserId);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      document
+        .getElementById("adminReplyForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const text = e.target.text.value.trim();
+          const file = e.target.file.files[0];
+          if (!text && !file) return;
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function () {
+              const dataUrl = reader.result;
+              ORYXAuth.sendChatMessage({
+                userId: selectedUserId,
+                sender: "admin",
+                text,
+                attachment: { name: file.name, dataUrl },
+              });
+              e.target.text.value = "";
+              e.target.file.value = null;
+              document.getElementById("adminFileName").textContent = "";
+              renderConversation();
+            };
+            reader.readAsDataURL(file);
+          } else {
+            ORYXAuth.sendChatMessage({
+              userId: selectedUserId,
+              sender: "admin",
+              text,
+            });
+            e.target.text.value = "";
+            renderConversation();
+          }
+        });
+
+      // initial load
+      loadConversations();
+      loadDeposits();
+      // refresh periodically
+      setInterval(() => {
+        loadConversations();
+        loadDeposits();
+        renderConversation();
+      }, 2000);
+
+      // show selected file name
+      document
+        .getElementById("adminFileInput")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          const span = document.getElementById("adminFileName");
+          if (file) {
+            span.textContent = file.name;
+          } else {
+            span.textContent = "";
+          }
+        });
+    </script>
+  </body>
+</html>

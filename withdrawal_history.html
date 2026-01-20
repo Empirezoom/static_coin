@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Withdrawal History — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="bg-slate-50 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-2xl p-6 bg-white rounded shadow">
+      <h2 class="text-2xl font-semibold mb-4">Withdrawal History</h2>
+      <div class="flex gap-2 mb-4">
+        <button
+          class="history-tab px-3 py-1 rounded bg-indigo-600 text-white"
+          data-status="all"
+        >
+          All
+        </button>
+        <button
+          class="history-tab px-3 py-1 rounded bg-slate-100 text-slate-700"
+          data-status="pending"
+        >
+          Pending
+        </button>
+        <button
+          class="history-tab px-3 py-1 rounded bg-slate-100 text-slate-700"
+          data-status="completed"
+        >
+          Completed
+        </button>
+        <button
+          class="history-tab px-3 py-1 rounded bg-slate-100 text-slate-700"
+          data-status="cancelled"
+        >
+          Cancelled
+        </button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm" id="withdrawHistoryTable">
+          <thead class="text-slate-500">
+            <tr>
+              <th class="text-left p-2">Date</th>
+              <th class="text-left p-2">Amount</th>
+              <th class="text-left p-2">Currency</th>
+              <th class="text-left p-2">Method</th>
+              <th class="text-left p-2">Status</th>
+              <th class="text-left p-2">Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- sample rows; replace with dynamic data as needed -->
+            <tr data-status="pending">
+              <td class="p-2">2026-01-18</td>
+              <td class="p-2">0.005</td>
+              <td class="p-2">BTC</td>
+              <td class="p-2">Bank</td>
+              <td class="p-2 text-yellow-600">Pending</td>
+              <td class="p-2">Ref123</td>
+            </tr>
+            <tr data-status="completed">
+              <td class="p-2">2025-12-30</td>
+              <td class="p-2">150</td>
+              <td class="p-2">USDT</td>
+              <td class="p-2">PayPal</td>
+              <td class="p-2 text-green-600">Completed</td>
+              <td class="p-2">Order789</td>
+            </tr>
+            <tr data-status="cancelled">
+              <td class="p-2">2025-11-12</td>
+              <td class="p-2">0.01</td>
+              <td class="p-2">ETH</td>
+              <td class="p-2">Bank</td>
+              <td class="p-2 text-red-600">Cancelled</td>
+              <td class="p-2">UserCancel</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-4">
+        <a href="withdraw.html" class="text-indigo-600">Back to Withdraw</a>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const tabs = document.querySelectorAll(".history-tab");
+        const rows = document.querySelectorAll(
+          "#withdrawHistoryTable tbody tr",
+        );
+
+        function setActive(el) {
+          tabs.forEach((t) => {
+            t.classList.remove("bg-indigo-600", "text-white");
+            t.classList.add("bg-slate-100", "text-slate-700");
+          });
+          el.classList.add("bg-indigo-600", "text-white");
+          el.classList.remove("bg-slate-100", "text-slate-700");
+        }
+
+        function filter(status) {
+          rows.forEach((r) => {
+            const s = r.getAttribute("data-status") || "pending";
+            if (status === "all" || status === s) r.style.display = "";
+            else r.style.display = "none";
+          });
+        }
+
+        tabs.forEach((t) => {
+          t.addEventListener("click", function () {
+            setActive(t);
+            filter(t.getAttribute("data-status"));
+          });
+        });
+
+        // initial
+        filter("all");
+      })();
+    </script>
+
+    <script src="/js/app.js"></script>
+  </body>
+</html>

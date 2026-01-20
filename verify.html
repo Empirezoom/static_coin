@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Verify — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .animate-fade-in {
+        animation: fadeIn 1s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .file-upload {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+      }
+      .file-upload input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      .file-upload-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border: 2px dashed #cbd5e0;
+        border-radius: 8px;
+        background-color: #f7fafc;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .file-upload-label:hover {
+        border-color: #4f46e5;
+        background-color: #eef2ff;
+      }
+      .file-upload-label i {
+        margin-right: 8px;
+        color: #4f46e5;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 min-h-screen flex items-center justify-center p-6"
+  >
+    <div class="w-full max-w-2xl animate-fade-in">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div
+          class="w-20 h-20 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl"
+        >
+          <i class="fas fa-shield-alt text-3xl text-white"></i>
+        </div>
+        <h1
+          class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+        >
+          Account Verification
+        </h1>
+        <p class="text-gray-600 mt-2">
+          Secure your account by verifying your identity. Upload your documents
+          and we'll review them promptly.
+        </p>
+      </div>
+
+      <!-- Verification Form -->
+      <div
+        class="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl shadow-2xl p-8"
+      >
+        <form id="verifyForm" class="space-y-6">
+          <!-- SSN / National ID -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-2 flex items-center"
+            >
+              <i class="fas fa-id-card mr-2 text-indigo-600"></i>SSN / National
+              ID
+            </label>
+            <input
+              name="ssn"
+              required
+              placeholder="Enter your SSN or National ID"
+              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+            />
+          </div>
+
+          <!-- ID Type -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-2 flex items-center"
+            >
+              <i class="fas fa-list mr-2 text-indigo-600"></i>ID Type
+            </label>
+            <select
+              name="idType"
+              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+            >
+              <option value="drivers_license">Driver's License</option>
+              <option value="passport">Passport</option>
+              <option value="national_id">National ID</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Upload ID Front -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-2 flex items-center"
+            >
+              <i class="fas fa-upload mr-2 text-indigo-600"></i>Upload ID (Front
+              Image)
+            </label>
+            <div class="file-upload">
+              <input
+                name="idfile_front"
+                type="file"
+                accept="image/*"
+                required
+              />
+              <div class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Click to upload front image</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload ID Back -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-2 flex items-center"
+            >
+              <i class="fas fa-upload mr-2 text-indigo-600"></i>Upload ID (Back
+              Image)
+            </label>
+            <div class="file-upload">
+              <input name="idfile_back" type="file" accept="image/*" required />
+              <div class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Click to upload back image</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div
+            class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-6"
+          >
+            <button
+              type="submit"
+              class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg transform hover:scale-105 flex items-center justify-center"
+            >
+              <i class="fas fa-paper-plane mr-2"></i>Submit for Verification
+            </button>
+            <a
+              href="/profile.html"
+              class="text-indigo-600 hover:text-indigo-800 transition-colors duration-300 flex items-center"
+            >
+              <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+            </a>
+          </div>
+        </form>
+
+        <!-- Info Box -->
+        <div class="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div class="flex items-start">
+            <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+            <div>
+              <h4 class="font-semibold text-blue-800">What happens next?</h4>
+              <p class="text-sm text-blue-700 mt-1">
+                Your documents will be reviewed by our admin team within 24-48
+                hours. You'll receive an email notification once the
+                verification is complete.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      // Update file upload labels when files are selected
+      document.querySelectorAll('input[type="file"]').forEach((input) => {
+        input.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          const label =
+            e.target.parentElement.querySelector(".file-upload-label");
+          if (file) {
+            label.innerHTML = `<i class="fas fa-check-circle text-green-600"></i> <span class="text-green-700">${file.name}</span>`;
+          } else {
+            label.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> <span>Click to upload image</span>`;
+          }
+        });
+      });
+
+      document
+        .getElementById("verifyForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const form = e.target;
+          const ssn = form.ssn.value.trim();
+          const idType = form.idType.value;
+          const fileFront = form.idfile_front.files[0];
+          const fileBack = form.idfile_back.files[0];
+
+          if (!fileFront || !fileBack) {
+            alert("Please upload both front and back images of your ID.");
+            return;
+          }
+
+          ORYXAuth.submitVerification({
+            ssn,
+            idType,
+            fileFrontName: fileFront.name,
+            fileBackName: fileBack.name,
+          });
+          alert(
+            "Verification submitted successfully! Admin will review your documents.",
+          );
+          location.href = "/profile.html";
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Assets — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      .animate-fade-in {
+        animation: fadeIn 1s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .upload-area {
+        border: 2px dashed #cbd5e0;
+        transition: all 0.3s ease;
+      }
+      .upload-area:hover {
+        border-color: #667eea;
+        background-color: #f8fafc;
+      }
+      .upload-area.dragover {
+        border-color: #667eea;
+        background-color: #eef2ff;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen p-6"
+  >
+    <div class="max-w-4xl mx-auto animate-fade-in">
+      <!-- Header -->
+      <div
+        class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-8 rounded-2xl shadow-xl mb-8"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center"
+            >
+              <span class="text-2xl">🖼️</span>
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold">Asset Management</h1>
+              <p class="text-purple-100">
+                Customize your brand with logos and favicons
+              </p>
+            </div>
+          </div>
+          <a
+            href="/admin_dashboard.html"
+            class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all duration-300 shadow-lg flex items-center"
+          >
+            <span class="mr-2">📊</span>Dashboard
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Upload Section -->
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg card-hover p-8"
+        >
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="mr-3">⬆️</span>Upload Assets
+          </h3>
+          <p class="text-gray-600 mb-6">
+            Upload custom logo and favicon for your ORYX platform. Files are
+            stored locally for demonstration. In production, these would be
+            uploaded to your server.
+          </p>
+
+          <form id="assetsForm" class="space-y-6">
+            <!-- Logo Upload -->
+            <div>
+              <label
+                class="block text-sm font-semibold text-gray-700 mb-2 flex items-center"
+              >
+                <span class="mr-2">🖼️</span>Logo (PNG/SVG/JPG)
+              </label>
+              <div
+                class="upload-area rounded-lg p-6 text-center cursor-pointer"
+                onclick="document.getElementById('logoInput').click()"
+              >
+                <span class="text-3xl mb-2">☁️</span>
+                <p class="text-gray-600">Click to upload logo</p>
+                <p class="text-sm text-gray-500">PNG, SVG, JPG up to 5MB</p>
+              </div>
+              <input
+                type="file"
+                id="logoInput"
+                name="logo"
+                accept="image/*"
+                class="hidden"
+              />
+            </div>
+
+            <!-- Favicon Upload -->
+            <div>
+              <label
+                class="block text-sm font-semibold text-gray-700 mb-2 flex items-center"
+              >
+                <span class="mr-2">⭐</span>Favicon (PNG/SVG/ICO)
+              </label>
+              <div
+                class="upload-area rounded-lg p-6 text-center cursor-pointer"
+                onclick="document.getElementById('faviconInput').click()"
+              >
+                <span class="text-3xl mb-2">☁️</span>
+                <p class="text-gray-600">Click to upload favicon</p>
+                <p class="text-sm text-gray-500">PNG, SVG, ICO up to 1MB</p>
+              </div>
+              <input
+                type="file"
+                id="faviconInput"
+                name="favicon"
+                accept="image/*,.ico"
+                class="hidden"
+              />
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 pt-4">
+              <button
+                type="submit"
+                class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg flex items-center justify-center"
+              >
+                <span class="mr-2">⬆️</span>Upload Assets
+              </button>
+              <button
+                id="clearAssets"
+                type="button"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-300 flex items-center"
+              >
+                <span class="mr-2">🗑️</span>Clear All
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Preview Section -->
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg card-hover p-8"
+        >
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="mr-3">👁️</span>Live Preview
+          </h3>
+
+          <!-- Logo Preview -->
+          <div class="mb-8">
+            <h4
+              class="text-lg font-semibold text-gray-700 mb-4 flex items-center"
+            >
+              <span class="mr-2">🖼️</span>Logo Preview
+            </h4>
+            <div
+              class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-2 border-dashed border-blue-200"
+            >
+              <div class="flex items-center justify-center">
+                <img
+                  id="previewLogo"
+                  class="h-20 w-20 object-contain rounded-lg shadow-lg bg-white p-2"
+                  src="/image/logo.svg"
+                  alt="logo"
+                />
+              </div>
+              <p class="text-center text-sm text-gray-600 mt-4">
+                This is how your logo will appear
+              </p>
+            </div>
+          </div>
+
+          <!-- Favicon Preview -->
+          <div class="mb-8">
+            <h4
+              class="text-lg font-semibold text-gray-700 mb-4 flex items-center"
+            >
+              <span class="mr-2">⭐</span>Favicon Preview
+            </h4>
+            <div
+              class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-lg border-2 border-dashed border-yellow-200"
+            >
+              <div class="flex items-center justify-center">
+                <img
+                  id="previewFavicon"
+                  class="h-12 w-12 object-contain rounded shadow bg-white p-1"
+                  src="/image/favicon.svg"
+                  alt="favicon"
+                />
+              </div>
+              <p class="text-center text-sm text-gray-600 mt-4">
+                Browser tab icon
+              </p>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div
+            class="bg-gradient-to-r from-green-50 to-teal-50 p-4 rounded-lg border border-green-200"
+          >
+            <div class="flex items-center">
+              <span class="text-green-600 mr-3">ℹ️</span>
+              <div>
+                <p class="text-sm font-semibold text-green-800">
+                  Assets Status
+                </p>
+                <p class="text-sm text-green-700">
+                  Changes will be visible after page reload
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      const form = document.getElementById("assetsForm");
+      const previewLogo = document.getElementById("previewLogo");
+      const previewFavicon = document.getElementById("previewFavicon");
+
+      // Drag and drop functionality
+      function setupDragDrop(inputId, areaSelector) {
+        const input = document.getElementById(inputId);
+        const area = document.querySelector(areaSelector);
+
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+          area.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+          area.addEventListener(eventName, highlight, false);
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          area.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+          area.classList.add("dragover");
+        }
+
+        function unhighlight(e) {
+          area.classList.remove("dragover");
+        }
+
+        area.addEventListener("drop", handleDrop, false);
+
+        function handleDrop(e) {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          input.files = files;
+          updateFileName(inputId, files[0]);
+        }
+      }
+
+      function updateFileName(inputId, file) {
+        const area = document.querySelector(
+          inputId === "logoInput"
+            ? ".upload-area:first-of-type"
+            : ".upload-area:last-of-type",
+        );
+        if (file) {
+          area.innerHTML = `
+            <span class="text-3xl mb-2">📄</span>
+            <p class="text-gray-800 font-semibold">${file.name}</p>
+            <p class="text-sm text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+          `;
+        }
+      }
+
+      // Setup drag and drop for both inputs
+      setupDragDrop("logoInput", ".upload-area:first-of-type");
+      setupDragDrop("faviconInput", ".upload-area:last-of-type");
+
+      // File input change handlers
+      document
+        .getElementById("logoInput")
+        .addEventListener("change", function (e) {
+          updateFileName("logoInput", e.target.files[0]);
+        });
+
+      document
+        .getElementById("faviconInput")
+        .addEventListener("change", function (e) {
+          updateFileName("faviconInput", e.target.files[0]);
+        });
+
+      // Load existing assets
+      try {
+        const l = ORYXAuth.getCustomLogo();
+        if (l) previewLogo.src = l;
+        const f = ORYXAuth.getCustomFavicon();
+        if (f) previewFavicon.src = f;
+      } catch (e) {}
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const logoFile = e.target.logo.files[0];
+        const favFile = e.target.favicon.files[0];
+
+        function showSuccess() {
+          // Create success notification
+          const notification = document.createElement("div");
+          notification.className =
+            "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in";
+          notification.innerHTML =
+            '<span class="mr-2">✅</span>Assets updated successfully! Reload pages to see changes.';
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 3000);
+        }
+
+        let processed = 0;
+        const total = (logoFile ? 1 : 0) + (favFile ? 1 : 0);
+
+        if (logoFile) {
+          const r = new FileReader();
+          r.onload = function () {
+            ORYXAuth.setCustomLogo(r.result);
+            previewLogo.src = r.result;
+            processed++;
+            if (processed === total) showSuccess();
+          };
+          r.readAsDataURL(logoFile);
+        }
+
+        if (favFile) {
+          const r2 = new FileReader();
+          r2.onload = function () {
+            ORYXAuth.setCustomFavicon(r2.result);
+            previewFavicon.src = r2.result;
+            processed++;
+            if (processed === total) showSuccess();
+          };
+          r2.readAsDataURL(favFile);
+        }
+
+        if (!logoFile && !favFile) {
+          const notification = document.createElement("div");
+          notification.className =
+            "fixed top-4 right-4 bg-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in";
+          notification.innerHTML =
+            '<span class="mr-2">⚠️</span>Please select files to upload.';
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 3000);
+        }
+      });
+
+      document
+        .getElementById("clearAssets")
+        .addEventListener("click", function () {
+          ORYXAuth.setCustomLogo("");
+          ORYXAuth.setCustomFavicon("");
+          previewLogo.src = "/image/logo.svg";
+          previewFavicon.src = "/image/favicon.svg";
+
+          // Reset upload areas
+          const areas = document.querySelectorAll(".upload-area");
+          areas[0].innerHTML = `
+            <span class="text-3xl mb-2">☁️</span>
+            <p class="text-gray-600">Click to upload logo</p>
+            <p class="text-sm text-gray-500">PNG, SVG, JPG up to 5MB</p>
+          `;
+          areas[1].innerHTML = `
+            <span class="text-3xl mb-2">☁️</span>
+            <p class="text-gray-600">Click to upload favicon</p>
+            <p class="text-sm text-gray-500">PNG, SVG, ICO up to 1MB</p>
+          `;
+
+          const notification = document.createElement("div");
+          notification.className =
+            "fixed top-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in";
+          notification.innerHTML =
+            '<span class="mr-2">🗑️</span>Custom assets cleared successfully!';
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 3000);
+        });
+    </script>
+  </body>
+</html>

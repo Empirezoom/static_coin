@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Withdraw — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="bg-slate-50 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md p-6 bg-white rounded shadow">
+      <h2 class="text-2xl font-semibold">Withdrawal request</h2>
+      <form id="withdrawForm" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-sm">Currency</label>
+          <select name="currency" class="w-full border rounded px-3 py-2">
+            <option>BTC</option>
+            <option>ETH</option>
+            <option>USDT</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm">Method (Bank/PayPal/CashApp)</label>
+          <input
+            name="method"
+            class="mt-1 w-full border rounded px-3 py-2"
+            required
+          />
+        </div>
+        <div>
+          <label class="block text-sm">Amount</label>
+          <input
+            id="amountInput"
+            name="amount"
+            type="number"
+            step="any"
+            class="mt-1 w-full border rounded px-3 py-2"
+            required
+          />
+          <p id="availableBal" class="text-sm text-slate-500 mt-1">
+            Available: —
+          </p>
+          <p
+            id="withdrawMsg"
+            class="text-sm text-red-600 mt-1"
+            aria-live="polite"
+          ></p>
+        </div>
+        <div>
+          <label class="block text-sm">Reference (optional)</label>
+          <input
+            name="reference"
+            class="mt-1 w-full border rounded px-3 py-2"
+          />
+        </div>
+        <div class="flex justify-between items-center">
+          <button
+            id="withdrawBtn"
+            class="px-4 py-2 bg-indigo-600 text-white rounded"
+          >
+            Submit withdrawal
+          </button>
+          <div class="flex gap-2">
+            <a href="withdrawal_history.html" class="text-indigo-600"
+              >View History</a
+            >
+            <a href="/wallet.html" class="text-indigo-600">Back</a>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      (function () {
+        const form = document.getElementById("withdrawForm");
+        const amountInput = document.getElementById("amountInput");
+        const availEl = document.getElementById("availableBal");
+        const msgEl = document.getElementById("withdrawMsg");
+        const btn = document.getElementById("withdrawBtn");
+
+        function fmt(n, currency) {
+          if (isNaN(n)) return "0";
+          // show more decimals for BTC
+          const d = currency.toLowerCase() === "btc" ? 8 : 6;
+          return Number(n).toFixed(d);
+        }
+
+        function updateAvailable() {
+          const currency = form.currency.value || "BTC";
+          const bal = ORYXAuth.getBalance(currency.toLowerCase());
+          availEl.textContent = `Available: ${fmt(bal, currency)} ${currency}`;
+          // if no balance, show message and disable
+          if (!bal || Number(bal) <= 0) {
+            msgEl.textContent =
+              "No available balance — click Make deposit on homepage";
+            btn.disabled = true;
+            btn.classList.add("opacity-50", "cursor-not-allowed");
+            return;
+          }
+          msgEl.textContent = "";
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        function validateAmount() {
+          const currency = form.currency.value || "BTC";
+          const bal = Number(ORYXAuth.getBalance(currency.toLowerCase()) || 0);
+          const val = parseFloat(amountInput.value || "0");
+          if (!val || val <= 0) {
+            msgEl.textContent =
+              "No available balance — click Make deposit on homepage";
+            return false;
+          }
+          if (val > bal) {
+            msgEl.textContent = "Amount exceeded";
+            return false;
+          }
+          msgEl.textContent = "";
+          return true;
+        }
+
+        form.currency.addEventListener("change", function () {
+          updateAvailable();
+          validateAmount();
+        });
+
+        amountInput.addEventListener("input", function () {
+          validateAmount();
+        });
+
+        // initial
+        updateAvailable();
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (!ORYXAuth.currentUser()) {
+            alert("You must be logged in.");
+            return;
+          }
+          if (!validateAmount()) return;
+
+          const currency = form.currency.value;
+          const method = form.method.value.trim();
+          const amount = amountInput.value;
+          const reference = form.reference.value.trim();
+          const res = ORYXAuth.addWithdrawalRequest({
+            amount,
+            currency,
+            method,
+            reference,
+          });
+          if (res) {
+            alert("Withdrawal requested. Admin will review.");
+            location.href = "/livechat.html";
+          } else alert("You must be logged in.");
+        });
+      })();
+    </script>
+  </body>
+</html>

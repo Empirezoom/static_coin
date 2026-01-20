@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Deposit — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="bg-slate-50 min-h-screen">
+    <div class="max-w-6xl mx-auto p-6">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">💰 Deposit Funds</h1>
+        <a href="/wallet.html" class="text-indigo-600">← Back to Wallet</a>
+      </div>
+
+      <!-- Deposit Form -->
+      <div class="bg-white p-6 rounded-lg shadow mb-8">
+        <h3 class="text-xl font-semibold mb-4">Make a Deposit</h3>
+        <form id="depositForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Payment Method</label>
+            <select
+              name="method"
+              class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            >
+              <option value="">Select a payment method</option>
+              <option>PayPal</option>
+              <option>CashApp</option>
+              <option>Venmo</option>
+              <option>Bank Transfer</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Amount (USD)</label>
+            <input
+              name="amount"
+              type="number"
+              min="1"
+              step="0.01"
+              placeholder="Enter amount"
+              class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              required
+            />
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-2">
+              📋 Deposit Instructions
+            </h4>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• Minimum deposit: $10 USD</li>
+              <li>• Processing time: 5-30 minutes</li>
+              <li>• Contact support if you need help</li>
+            </ul>
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200"
+          >
+            🚀 Submit Deposit Request
+          </button>
+        </form>
+      </div>
+
+      <!-- Recent Deposits -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold">📋 Recent Deposits</h3>
+          <a
+            href="/deposit_history.html"
+            class="text-indigo-600 hover:text-indigo-800 transition-colors duration-200"
+          >
+            View All History →
+          </a>
+        </div>
+        <div id="requestsList" class="space-y-3">
+          <!-- Deposits will be populated here -->
+        </div>
+        <div id="emptyState" class="text-center py-8 text-gray-500">
+          <div class="text-4xl mb-2">💰</div>
+          <p>No deposit requests yet</p>
+          <p class="text-sm">Your deposit history will appear here</p>
+        </div>
+      </div>
+
+      <!-- Support Section -->
+      <div class="bg-white p-6 rounded-lg shadow mt-8">
+        <h3 class="text-xl font-semibold mb-4">🆘 Need Help?</h3>
+        <p class="font-semibold mb-4">
+          Having trouble with your deposit? Our support team is here to help!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a
+            href="/livechat.html"
+            class="flex-1 bg-white font-semibold text-center py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200"
+          >
+            💬 Live Chat Support
+          </a>
+          <a
+            href="mailto:support@oryx.com"
+            class="flex-1 bg-white font-semibold text-center py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            📧 Email Support
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      // Populate deposits and handle form submission
+      window.addEventListener("load", function () {
+        const user = ORYXAuth.currentUser();
+        if (!user) {
+          alert("Please login");
+          location.href = "/login.html";
+          return;
+        }
+
+        const list = document.getElementById("requestsList");
+        const emptyState = document.getElementById("emptyState");
+
+        // Display recent deposits
+        const deposits = user.depositRequests || [];
+        if (deposits.length > 0) {
+          emptyState.style.display = "none";
+          deposits
+            .slice(-5)
+            .reverse()
+            .forEach((r) => {
+              const depositItem = document.createElement("div");
+              depositItem.className =
+                "flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors duration-200";
+
+              const statusColors = {
+                pending: "bg-yellow-100 text-yellow-800",
+                approved: "bg-green-100 text-green-800",
+                rejected: "bg-red-100 text-red-800",
+                completed: "bg-blue-100 text-blue-800",
+              };
+
+              const statusColor =
+                statusColors[r.status] || "bg-gray-100 text-gray-800";
+
+              depositItem.innerHTML = `
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <span class="text-indigo-600 font-semibold">${r.method.charAt(0)}</span>
+                </div>
+                <div>
+                  <div class="font-semibold">${r.method}</div>
+                  <div class="text-sm text-gray-500">${new Date(r.timestamp || Date.now()).toLocaleDateString()}</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-lg">$${parseFloat(r.amount).toFixed(2)}</div>
+                <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full ${statusColor}">
+                  ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}
+                </span>
+              </div>
+            `;
+              list.appendChild(depositItem);
+            });
+        } else {
+          emptyState.style.display = "block";
+        }
+
+        // Handle deposit form submission
+        document
+          .getElementById("depositForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            const method = e.target.method.value;
+            const amount = parseFloat(e.target.amount.value);
+
+            if (!method) {
+              alert("Please select a payment method");
+              return;
+            }
+
+            if (amount < 10) {
+              alert("Minimum deposit amount is $10 USD");
+              return;
+            }
+
+            // Disable form during submission
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = "⏳ Processing...";
+            submitBtn.disabled = true;
+
+            try {
+              const req = ORYXAuth.addDepositRequest({ method, amount });
+
+              // Send chat message to admin
+              const user = ORYXAuth.currentUser();
+              if (user && ORYXAuth.sendChatMessage) {
+                const idPart = req && req.id ? ` (ID: ${req.id})` : "";
+                ORYXAuth.sendChatMessage({
+                  userId: user.id,
+                  sender: "user",
+                  text: `💰 Deposit Request: ${method} — $${amount}${idPart}`,
+                });
+              }
+
+              // Show success message
+              alert(
+                `✅ Deposit request submitted successfully!\n\nMethod: ${method}\nAmount: $${amount}\n\nOur team will review your request within 5-30 minutes. You'll receive updates via live chat.`,
+              );
+
+              // Reset form
+              e.target.reset();
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+
+              // Reload page to show new deposit
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
+            } catch (error) {
+              alert("❌ Error submitting deposit request. Please try again.");
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

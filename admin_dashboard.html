@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Dashboard — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      .animate-fade-in {
+        animation: fadeIn 1s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen p-6"
+  >
+    <div class="max-w-6xl mx-auto animate-fade-in">
+      <!-- Header -->
+      <div
+        class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-2xl shadow-xl mb-8"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center"
+            >
+              <span class="text-2xl">📊</span>
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+              <p class="text-indigo-100">
+                Monitor users, interactions, and system activity
+              </p>
+            </div>
+          </div>
+          <a
+            href="/admin_livechat.html"
+            class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-all duration-300 shadow-lg flex items-center"
+          >
+            <span class="mr-2">💬</span>Live Chat
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-lg card-hover"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4"
+            >
+              <span class="text-xl">👥</span>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Total Users</p>
+              <p class="text-2xl font-bold text-gray-800" id="totalUsers">0</p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-lg card-hover"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4"
+            >
+              <span class="text-xl">💬</span>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Active Chats</p>
+              <p class="text-2xl font-bold text-gray-800" id="activeChats">0</p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-lg card-hover"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4"
+            >
+              <span class="text-xl">⏰</span>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Pending Requests</p>
+              <p class="text-2xl font-bold text-gray-800" id="pendingRequests">
+                0
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-lg card-hover"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4"
+            >
+              <span class="text-xl">📈</span>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Total Transactions</p>
+              <p
+                class="text-2xl font-bold text-gray-800"
+                id="totalTransactions"
+              >
+                0
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-lg card-hover"
+        >
+          <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="mr-3">👥</span>All Users
+          </h4>
+          <ul id="userList" class="space-y-3"></ul>
+        </div>
+        <div
+          class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-lg card-hover"
+        >
+          <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="mr-3">⚡</span>Active Interactions
+          </h4>
+          <div class="mb-6">
+            <h5 class="font-semibold text-gray-700 mb-3 flex items-center">
+              <span class="mr-2">💬</span>Users who chatted
+            </h5>
+            <ul id="chattingUsers" class="space-y-2"></ul>
+          </div>
+          <div>
+            <h5 class="font-semibold text-gray-700 mb-3 flex items-center">
+              <span class="mr-2">🔄</span>Users with requests
+            </h5>
+            <ul id="reqUsers" class="space-y-2"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      function loadUsers() {
+        const all = JSON.parse(localStorage.getItem("oryx_users_v1") || "{}");
+        const userList = document.getElementById("userList");
+        const totalUsersEl = document.getElementById("totalUsers");
+        const totalTransactionsEl =
+          document.getElementById("totalTransactions");
+
+        userList.innerHTML = "";
+        let totalUsers = 0;
+        let totalTransactions = 0;
+
+        Object.values(all).forEach((u) => {
+          totalUsers++;
+          const deposits = u.depositRequests ? u.depositRequests.length : 0;
+          const withdrawals = u.withdrawalRequests
+            ? u.withdrawalRequests.length
+            : 0;
+          totalTransactions += deposits + withdrawals;
+
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div class='p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200'>
+              <div class='flex items-center justify-between'>
+                <div class='flex items-center'>
+                  <div class='w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center mr-3'>
+                    <span class='text-white font-semibold text-sm'>${(u.name || u.email).charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <div class='font-semibold text-gray-800'>${u.name || u.email}</div>
+                    <div class='text-sm text-gray-600'>${u.email}</div>
+                  </div>
+                </div>
+                <div class='text-right'>
+                  <div class='text-sm text-gray-600'>Deposits: <span class='font-semibold text-green-600'>${deposits}</span></div>
+                  <div class='text-sm text-gray-600'>Withdrawals: <span class='font-semibold text-red-600'>${withdrawals}</span></div>
+                </div>
+              </div>
+            </div>
+          `;
+          userList.appendChild(li);
+        });
+
+        totalUsersEl.textContent = totalUsers;
+        totalTransactionsEl.textContent = totalTransactions;
+      }
+
+      function loadActive() {
+        const msgs = ORYXAuth.getChatMessages();
+        const byUser = {};
+        msgs.forEach((m) => {
+          if (m.userId) {
+            byUser[m.userId] = byUser[m.userId] || 0;
+            byUser[m.userId]++;
+          }
+        });
+        const chatting = document.getElementById("chattingUsers");
+        const activeChatsEl = document.getElementById("activeChats");
+        chatting.innerHTML = "";
+        let activeChats = 0;
+
+        Object.keys(byUser).forEach((uid) => {
+          activeChats++;
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div class='p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200'>
+              <div class='flex items-center justify-between'>
+                <span class='font-medium text-gray-800'>User: ${uid}</span>
+                <span class='text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full'>${byUser[uid]} messages</span>
+              </div>
+            </div>
+          `;
+          chatting.appendChild(li);
+        });
+
+        activeChatsEl.textContent = activeChats;
+
+        const all = JSON.parse(localStorage.getItem("oryx_users_v1") || "{}");
+        const reqList = document.getElementById("reqUsers");
+        const pendingRequestsEl = document.getElementById("pendingRequests");
+        reqList.innerHTML = "";
+        let pendingRequests = 0;
+
+        Object.values(all).forEach((u) => {
+          if (
+            (u.depositRequests && u.depositRequests.length) ||
+            (u.withdrawalRequests && u.withdrawalRequests.length)
+          ) {
+            const deposits = u.depositRequests
+              ? u.depositRequests.filter((r) => r.status === "pending").length
+              : 0;
+            const withdrawals = u.withdrawalRequests
+              ? u.withdrawalRequests.filter((r) => r.status === "pending")
+                  .length
+              : 0;
+            pendingRequests += deposits + withdrawals;
+
+            const li = document.createElement("li");
+            li.innerHTML = `
+              <div class='p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200'>
+                <div class='flex items-center justify-between'>
+                  <div class='flex items-center'>
+                    <div class='w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mr-3'>
+                      <span class='text-white font-semibold text-xs'>${(u.name || u.email).charAt(0).toUpperCase()}</span>
+                    </div>
+                    <span class='font-medium text-gray-800'>${u.name || u.email}</span>
+                  </div>
+                  <div class='text-right'>
+                    <div class='text-sm text-gray-600'>Pending: <span class='font-semibold text-orange-600'>${deposits + withdrawals}</span></div>
+                  </div>
+                </div>
+              </div>
+            `;
+            reqList.appendChild(li);
+          }
+        });
+
+        pendingRequestsEl.textContent = pendingRequests;
+      }
+
+      loadUsers();
+      loadActive();
+      setInterval(() => {
+        loadUsers();
+        loadActive();
+      }, 2000);
+    </script>
+  </body>
+</html>

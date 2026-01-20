@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Login — ORYX</title>
+    <link rel="icon" href="/image/favicon.svg" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+      }
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .dark .glass-effect {
+        background: rgba(0, 0, 0, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-white  flex items-center justify-center p-4"
+  >
+    <div class="fixed top-4 right-4 z-50">
+      <button
+        id="themeToggle"
+        class="text-gray-600 transition-colors bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full p-2 shadow-lg"
+      >
+        <span class="text-lg">🌙</span>
+      </button>
+    </div>
+    <div class="w-full max-w-md animate-fade-in-up">
+      <!-- Logo/Brand Section -->
+      <div class="text-center mb-8">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 bg-white/20 dark:bg-gray-800/20 rounded-full backdrop-blur-sm mb-4"
+        >
+          <span class="text-3xl">🦅</span>
+        </div>
+        <h1 class="text-3xl font-semibold mb-2">
+          Welcome Back
+        </h1>
+        <p class="font-semibold">
+          Sign in to your ORYX account
+        </p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="glass-effect rounded-2xl shadow-2xl p-8">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-semibold">
+            🔐 Secure Login
+          </h2>
+          <p class="font-semibold mt-1">
+            Access your crypto portfolio
+          </p>
+        </div>
+
+        <form id="loginForm" class="space-y-6">
+          <div class="relative">
+            <label
+              class="block text-sm font-semibold mb-2"
+            >
+              <span class="flex items-center">
+                <span class="mr-2">📧</span>
+                Email Address
+              </span>
+            </label>
+            <div class="relative">
+              <input
+                required
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                class="w-full pl-4 pr-4 py-3 border border-gray-300 bg-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200  backdrop-blur-sm"
+              />
+            </div>
+          </div>
+
+          <div class="relative">
+            <label
+              class="block text-sm font-semibold mb-2"
+            >
+              <span class="flex items-center">
+                <span class="mr-2">🔑</span>
+                Password
+              </span>
+            </label>
+            <div class="relative">
+              <input
+                required
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                class="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white font-semibold backdrop-blur-sm"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <a
+              href="/reset.html"
+              class="text-sm  hover:text-indigo-800  font-semibold transition-colors duration-200"
+            >
+              Forgot password? 🔄
+            </a>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <span class="flex items-center justify-center">
+              <span class="mr-2">🚀</span>
+              Sign In
+            </span>
+          </button>
+        </form>
+
+        <div class="mt-6 text-center">
+          <p class="font-semibold">
+            Don't have an account?
+            <a
+              href="/register.html"
+              class="hover:text-indigo-800  font-semibold transition-colors duration-200"
+            >
+              Sign up here ✨
+            </a>
+          </p>
+        </div>
+
+        <!-- Security Notice -->
+        <div
+          class="mt-6 p-4 bg-green-600 rounded-xl border border-green-200 "
+        >
+          <div class="flex items-center">
+            <span class="font-semibold mr-2">🛡️</span>
+            <p class="text-sm font-semibold">
+              Your security is our priority. All connections are encrypted.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const form = e.target;
+          const email = form.email.value.trim();
+          const password = form.password.value;
+
+          // Add loading state
+          const button = form.querySelector('button[type="submit"]');
+          const originalText = button.innerHTML;
+          button.innerHTML =
+            '<span class="flex items-center justify-center"><span class="mr-2">⏳</span>Signing In...</span>';
+          button.disabled = true;
+
+          setTimeout(() => {
+            if (window.ORYXAuth && ORYXAuth.login(email, password)) {
+              location.href = "/index.html";
+            } else {
+              button.innerHTML = originalText;
+              button.disabled = false;
+              alert("Invalid credentials (client mock)");
+            }
+          }, 1000);
+        });
+    </script>
+  </body>
+</html>

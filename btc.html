@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>BTC Wallet — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  </head>
+  <body class="bg-gradient-to-br from-orange-50 to-orange-100 min-h-screen">
+    <div class="max-w-4xl mx-auto p-6">
+      <!-- Header with Logo -->
+      <div
+        class="bg-gradient-to-r from-orange-400 to-orange-600 text-white p-6 rounded-lg shadow-lg mb-8"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <img
+              src="https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+              alt="BTC"
+              class="w-16 h-16"
+            />
+            <div>
+              <h1 class="text-3xl font-bold">Bitcoin Wallet</h1>
+              <p class="text-orange-100">Manage your BTC securely</p>
+            </div>
+          </div>
+          <a
+            href="/wallet.html"
+            class="bg-white text-orange-600 px-4 py-2 rounded-lg font-semibold hover:bg-orange-50 transition"
+            >Back to Wallets</a
+          >
+        </div>
+      </div>
+
+      <!-- Balance Card -->
+      <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold text-slate-700">
+              Current Balance
+            </h3>
+            <div class="text-3xl font-bold text-orange-600" id="btcBalance">
+              0.000
+            </div>
+            <div class="text-sm text-orange-700 mt-1" id="btcBalanceUsd">
+              $0.00
+            </div>
+            <p class="text-sm text-slate-500">BTC</p>
+          </div>
+          <img
+            src="https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+            alt="BTC"
+            class="w-12 h-12 opacity-20"
+          />
+        </div>
+      </div>
+
+      <!-- Address and QR -->
+      <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+        <h3 class="text-lg font-semibold mb-4 text-slate-700">
+          Wallet Address
+        </h3>
+        <div class="flex items-center gap-4 mb-4">
+          <div
+            id="btcAddress"
+            class="font-mono bg-slate-100 p-3 rounded-lg flex-1"
+          >
+            —
+          </div>
+          <button
+            id="copyBtc"
+            class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
+          >
+            Copy
+          </button>
+        </div>
+        <div class="text-center">
+          <canvas
+            id="btcQr"
+            class="inline-block border rounded-lg p-2 bg-white"
+          ></canvas>
+          <p class="text-sm text-slate-500 mt-2">Scan QR code to receive BTC</p>
+        </div>
+      </div>
+
+      <!-- Transactions -->
+      <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+        <h3 class="text-lg font-semibold mb-4 text-slate-700">
+          Recent Transactions
+        </h3>
+        <ul id="btcTxList" class="space-y-3"></ul>
+      </div>
+
+      <!-- Send BTC -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-lg font-semibold mb-4 text-slate-700">Send BTC</h3>
+        <form id="btcSendForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700"
+              >Recipient Address</label
+            >
+            <input
+              name="to"
+              placeholder="Enter BTC address"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700"
+              >Amount (BTC)</label
+            >
+            <input
+              name="amount"
+              type="number"
+              step="any"
+              placeholder="0.001"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              required
+            />
+          </div>
+          <button
+            class="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition font-semibold"
+          >
+            Send BTC
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        const user = ORYXAuth.currentUser();
+        if (!user) {
+          alert("Please login");
+          location.href = "/login.html";
+          return;
+        }
+        const btc = user.wallet?.btc || "1FfmbHfnpaZjKFvyi1okTjJJusN455paPH";
+        document.getElementById("btcAddress").textContent = btc;
+        document.getElementById("btcBalance").textContent =
+          ORYXAuth.getBalance("btc").toString();
+        if (window.CryptoPrices && CryptoPrices.updateFiatDisplays)
+          CryptoPrices.updateFiatDisplays();
+        const qr = new QRious({
+          element: document.getElementById("btcQr"),
+          value: btc,
+          size: 160,
+        });
+
+        // Copy address
+        document
+          .getElementById("copyBtc")
+          .addEventListener("click", function () {
+            const txt = document
+              .getElementById("btcAddress")
+              .textContent.trim();
+            if (!txt || txt === "—") return alert("No address to copy");
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(txt).then(() => {
+                const orig = this.textContent;
+                this.textContent = "Copied!";
+                this.classList.add("bg-green-500");
+                this.classList.remove("bg-orange-500");
+                setTimeout(() => {
+                  this.textContent = orig;
+                  this.classList.remove("bg-green-500");
+                  this.classList.add("bg-orange-500");
+                }, 1500);
+              });
+            } else {
+              const ta = document.createElement("textarea");
+              ta.value = txt;
+              document.body.appendChild(ta);
+              ta.select();
+              try {
+                document.execCommand("copy");
+                alert("Copied");
+              } catch (e) {
+                alert("Copy failed");
+              }
+              ta.remove();
+            }
+          });
+
+        function renderBtcTx() {
+          const list = document.getElementById("btcTxList");
+          const txs = ORYXAuth.getTransactions("btc");
+          list.innerHTML = "";
+          if (txs.length === 0) {
+            list.innerHTML =
+              '<li class="text-slate-500 text-center py-4">No transactions yet</li>';
+            return;
+          }
+          txs.forEach((t) => {
+            const li = document.createElement("li");
+            const dateStr = new Date(t.createdAt).toLocaleString();
+            if (t.type === "send") {
+              li.innerHTML = `<div class='flex justify-between items-center p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg'>
+                <div>
+                  <div class='font-semibold text-red-700'>Sent BTC</div>
+                  <div class='text-sm text-slate-600'>To: ${t.to}</div>
+                  <div class='text-xs text-slate-500'>${dateStr}</div>
+                </div>
+                <div class='text-right'>
+                  <div class='font-bold text-red-700'>-${t.amount} BTC</div>
+                </div>
+              </div>`;
+            } else {
+              li.innerHTML = `<div class='flex justify-between items-center p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg'>
+                <div>
+                  <div class='font-semibold text-green-700'>Received BTC</div>
+                  <div class='text-xs text-slate-500'>${dateStr}</div>
+                </div>
+                <div class='text-right'>
+                  <div class='font-bold text-green-700'>+${t.amount} BTC</div>
+                </div>
+              </div>`;
+            }
+            list.appendChild(li);
+          });
+        }
+        renderBtcTx();
+
+        document
+          .getElementById("btcSendForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            const to = e.target.to.value.trim();
+            const amount = Number(e.target.amount.value);
+            if (!to || !amount) return alert("Enter recipient and amount");
+            ORYXAuth.addTransaction("btc", {
+              id: "tx_" + Date.now(),
+              type: "send",
+              amount,
+              to,
+              createdAt: Date.now(),
+            });
+            alert("Transaction completed");
+            document.getElementById("btcBalance").textContent =
+              ORYXAuth.getBalance("btc").toString();
+            renderBtcTx();
+            e.target.reset();
+          });
+      });
+    </script>
+  </body>
+</html>

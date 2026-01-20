@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Live Chat — ORYX</title>
+    <link rel="icon" href="/image/favicon.svg" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-10px);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out;
+      }
+      .typing-dot {
+        animation: typing 1.4s infinite ease-in-out;
+      }
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .message-bubble {
+        max-width: 70%;
+        word-wrap: break-word;
+      }
+      .message-enter {
+        animation: fadeInUp 0.3s ease-out;
+      }
+      .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+      }
+      .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: rgba(156, 163, 175, 0.5);
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-white font-semibold"
+  >
+    <div class="min-h-screen flex flex-col">
+      <!-- Header -->
+      <header
+        class="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-10"
+      >
+        <div class="max-w-4xl mx-auto px-4 py-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <a
+                href="/index.html"
+                class="font-semibold hover:text-indigo-200 transition-colors"
+              >
+                <span class="text-2xl">⬅️</span>
+              </a>
+              <div class="flex items-center space-x-3">
+                <div
+                  class="w-10 h-10 bg-white font-semibold rounded-full flex items-center justify-center"
+                >
+                  <span class="font-semibold text-lg">🦅</span>
+                </div>
+                <div>
+                  <h1 class="text-xl font-semibold">ORYX Support</h1>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-white rounded-full pulse"></div>
+                    <span class="text-sm text-green-300">Online</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-indigo-200">Response time: ~2 min</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Chat Container -->
+      <div class="flex-1 max-w-4xl mx-auto w-full px-4 py-6">
+        <div
+          class="glass-effect rounded-2xl shadow-2xl h-[calc(100vh-200px)] flex flex-col overflow-hidden"
+        >
+          <!-- Chat Messages Area -->
+          <div class="flex-1 p-6 overflow-hidden">
+            <div
+              id="chatBox"
+              class="h-full overflow-y-auto scrollbar-thin space-y-4"
+            >
+              <!-- Welcome Message -->
+              <div class="text-center py-8 animate-fade-in-up">
+                <div
+                  class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-4"
+                >
+                  <span class="text-2xl">💬</span>
+                </div>
+                <h3 class="text-lg font-semibold font-semibold mb-2">
+                  Welcome to ORYX Support!
+                </h3>
+                <p class="text-gray-600 max-w-md mx-auto">
+                  We're here to help with your crypto trading questions. Send us
+                  a message and we'll respond shortly.
+                </p>
+              </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div
+              id="typingIndicator"
+              class="hidden flex items-center space-x-2 p-4"
+            >
+              <div
+                class="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center"
+              >
+                <span class="font-semibold text-sm">🛟</span>
+              </div>
+              <div class="bg-gray-100 rounded-2xl px-4 py-2">
+                <div class="flex space-x-1">
+                  <div
+                    class="w-2 h-2 bg-gray-400 rounded-full typing-dot"
+                  ></div>
+                  <div
+                    class="w-2 h-2 bg-gray-400 rounded-full typing-dot"
+                  ></div>
+                  <div
+                    class="w-2 h-2 bg-gray-400 rounded-full typing-dot"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message Input Area -->
+          <div
+            class="border-t border-gray-200 p-4 bg-white/50 backdrop-blur-sm"
+          >
+            <form id="chatForm" class="flex flex-col space-y-3">
+              <!-- File Preview Area -->
+              <div
+                id="filePreview"
+                class="hidden bg-gray-50 rounded-xl p-3 border border-gray-200"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <span id="fileIcon" class="text-2xl">📎</span>
+                    <div>
+                      <p
+                        id="filePreviewName"
+                        class="text-sm  font-semibold"
+                      ></p>
+                      <p id="filePreviewSize" class="text-xs font-semibold"></p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    id="removeFile"
+                    class="text-red-500 hover:text-red-700 transition-colors"
+                  >
+                    <span class="text-lg">✕</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Input Area -->
+              <div class="flex items-end space-x-3">
+                <div class="flex-1 relative">
+                  <textarea
+                    name="text"
+                    placeholder="Type your message here... 💬"
+                    rows="1"
+                    class="w-full resize-none border border-gray-300 rounded-xl px-4 py-3 pr-12 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm max-h-32"
+                    style="min-height: 48px"
+                  ></textarea>
+                  <button
+                    type="button"
+                    id="emojiBtn"
+                    class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <span class="text-lg">😊</span>
+                  </button>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                  <label
+                    for="fileInput"
+                    class="p-3 bg-gray-100 hover:bg-gray-200 rounded-xl cursor-pointer transition-colors duration-200 group"
+                    title="Attach file"
+                  >
+                    <span
+                      class="text-xl group-hover:scale-110 transition-transform"
+                      >📎</span
+                    >
+                  </label>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    name="file"
+                    class="hidden"
+                  />
+
+                  <button
+                    type="submit"
+                    class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 font-semibold rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    id="sendBtn"
+                  >
+                    <span class="flex items-center">
+                      <span class="mr-2">🚀</span>
+                      <span id="sendText">Send</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors"
+                  onclick="quickMessage('I need help with my deposit')"
+                >
+                  💰 Deposit Help
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors"
+                  onclick="quickMessage('How do I withdraw funds?')"
+                >
+                  💸 Withdrawal Help
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1 text-xs bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors"
+                  onclick="quickMessage('I have a security concern')"
+                >
+                  🔒 Security Issue
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded-full hover:bg-orange-200 transition-colors"
+                  onclick="quickMessage('General inquiry')"
+                >
+                  ❓ General Question
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emoji Picker Modal (Simple implementation) -->
+    <div
+      id="emojiPicker"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Choose an emoji</h3>
+          <button
+            id="closeEmojiPicker"
+            class="font-semibold hover:text-gray-700"
+          >
+            <span class="text-xl">✕</span>
+          </button>
+        </div>
+        <div class="grid grid-cols-6 gap-2 max-h-48 overflow-y-auto">
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('😊')"
+          >
+            😊
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('😂')"
+          >
+            😂
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('❤️')"
+          >
+            ❤️
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('👍')"
+          >
+            👍
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('👎')"
+          >
+            👎
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('🔥')"
+          >
+            🔥
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('💯')"
+          >
+            💯
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('🚀')"
+          >
+            🚀
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('💰')"
+          >
+            💰
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('🛟')"
+          >
+            🛟
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('⚠️')"
+          >
+            ⚠️
+          </button>
+          <button
+            class="text-2xl hover:bg-gray-100 p-2 rounded"
+            onclick="insertEmoji('✅')"
+          >
+            ✅
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      let isTyping = false;
+      let typingTimeout;
+
+      function render() {
+        const user = ORYXAuth.currentUser();
+        if (!user) {
+          alert("Please login");
+          location.href = "/login.html";
+          return;
+        }
+        const box = document.getElementById("chatBox");
+        const msgs = ORYXAuth.getChatMessages().filter(
+          (m) =>
+            m.userId === user.id ||
+            m.userId === null ||
+            (m.sender === "admin" && m.userId === user.id),
+        );
+
+        // Clear existing messages except welcome message
+        const welcomeMessage = box.querySelector(".text-center");
+        box.innerHTML = "";
+        if (welcomeMessage) {
+          box.appendChild(welcomeMessage);
+        }
+
+        msgs.forEach((m, index) => {
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `flex ${m.sender === "admin" ? "justify-start" : "justify-end"} mb-4 message-enter`;
+          messageDiv.style.animationDelay = `${index * 0.1}s`;
+
+          let avatar, bgColor, textColor;
+          if (m.sender === "admin") {
+            avatar = "🛟";
+            bgColor = "bg-gradient-to-r from-green-100 to-blue-100";
+            textColor = "font-semibold";
+          } else {
+            avatar = "👤";
+            bgColor = "bg-gradient-to-r from-indigo-500 to-purple-500";
+            textColor = "font-semibold";
+          }
+
+          let content = `
+            <div class="flex items-start space-x-3 max-w-[80%]">
+              <div class="w-8 h-8 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-sm">${avatar}</span>
+              </div>
+              <div class="message-bubble">
+                <div class="${bgColor} ${textColor} px-4 py-3 rounded-2xl shadow-sm">
+          `;
+
+          if (m.text) {
+            content += `<p class="text-sm leading-relaxed">${m.text}</p>`;
+          }
+
+          if (m.attachment) {
+            const name = m.attachment.name || "attachment";
+            const dataUrl = m.attachment.dataUrl;
+            if (dataUrl && dataUrl.startsWith("data:image")) {
+              content += `<div class='mt-3'><img src='${dataUrl}' alt='${name}' class='w-48 h-auto rounded-lg shadow-sm' /></div>`;
+            }
+            content += `<div class='mt-3'><a href='${dataUrl}' download='${name}' class='inline-flex items-center text-xs underline hover:no-underline'><span class='mr-1'>📎</span>${name}</a></div>`;
+          }
+
+          content += `
+                </div>
+                <div class="text-xs font-semibold mt-1 px-2 flex items-center">
+                  <span>${new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                  ${m.sender === "user" ? '<span class="ml-2">✓✓</span>' : ""}
+                </div>
+              </div>
+            </div>
+          `;
+
+          messageDiv.innerHTML = content;
+          box.appendChild(messageDiv);
+        });
+
+        // Mark messages as read
+        ORYXAuth.markMessagesRead(user.id);
+
+        // Scroll to bottom
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function quickMessage(message) {
+        document.querySelector('textarea[name="text"]').value = message;
+        document.querySelector('textarea[name="text"]').focus();
+      }
+
+      function insertEmoji(emoji) {
+        const textarea = document.querySelector('textarea[name="text"]');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        const before = text.substring(0, start);
+        const after = text.substring(end, text.length);
+        textarea.value = before + emoji + after;
+        textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+        textarea.focus();
+        document.getElementById("emojiPicker").classList.add("hidden");
+      }
+
+      // Auto-resize textarea
+      document
+        .querySelector('textarea[name="text"]')
+        .addEventListener("input", function () {
+          this.style.height = "auto";
+          this.style.height = Math.min(this.scrollHeight, 128) + "px";
+        });
+
+      // Emoji picker toggle
+      document
+        .getElementById("emojiBtn")
+        .addEventListener("click", function () {
+          document.getElementById("emojiPicker").classList.toggle("hidden");
+          document.getElementById("emojiPicker").classList.toggle("flex");
+        });
+
+      document
+        .getElementById("closeEmojiPicker")
+        .addEventListener("click", function () {
+          document.getElementById("emojiPicker").classList.add("hidden");
+          document.getElementById("emojiPicker").classList.remove("flex");
+        });
+
+      // File handling
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          const preview = document.getElementById("filePreview");
+          const previewName = document.getElementById("filePreviewName");
+          const previewSize = document.getElementById("filePreviewSize");
+          const fileIcon = document.getElementById("fileIcon");
+
+          if (file) {
+            previewName.textContent = file.name;
+            previewSize.textContent = formatFileSize(file.size);
+
+            // Set appropriate icon based on file type
+            if (file.type.startsWith("image/")) {
+              fileIcon.textContent = "🖼️";
+            } else if (file.type.startsWith("video/")) {
+              fileIcon.textContent = "🎥";
+            } else if (file.type.startsWith("audio/")) {
+              fileIcon.textContent = "🎵";
+            } else {
+              fileIcon.textContent = "📄";
+            }
+
+            preview.classList.remove("hidden");
+          } else {
+            preview.classList.add("hidden");
+          }
+        });
+
+      document
+        .getElementById("removeFile")
+        .addEventListener("click", function () {
+          document.getElementById("fileInput").value = "";
+          document.getElementById("filePreview").classList.add("hidden");
+        });
+
+      function formatFileSize(bytes) {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+      }
+
+      document
+        .getElementById("chatForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const user = ORYXAuth.currentUser();
+          const text = e.target.text.value.trim();
+          const file = e.target.file.files[0];
+          const sendBtn = document.getElementById("sendBtn");
+          const sendText = document.getElementById("sendText");
+
+          if (!text && !file) return;
+
+          // Disable send button and show loading
+          sendBtn.disabled = true;
+          sendText.textContent = "Sending...";
+
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function () {
+              const dataUrl = reader.result;
+              ORYXAuth.sendChatMessage({
+                userId: user.id,
+                sender: "user",
+                text,
+                attachment: { name: file.name, dataUrl },
+              });
+              e.target.text.value = "";
+              e.target.file.value = null;
+              document.getElementById("filePreview").classList.add("hidden");
+              render();
+
+              // Re-enable send button
+              sendBtn.disabled = false;
+              sendText.textContent = "Send";
+            };
+            reader.readAsDataURL(file);
+          } else {
+            ORYXAuth.sendChatMessage({ userId: user.id, sender: "user", text });
+            e.target.text.value = "";
+            render();
+
+            // Re-enable send button
+            sendBtn.disabled = false;
+            sendText.textContent = "Send";
+          }
+
+          // Reset textarea height
+          const textarea = document.querySelector('textarea[name="text"]');
+          textarea.style.height = "auto";
+        });
+
+      // Simulate typing indicator (in a real app, this would come from server)
+      function showTypingIndicator() {
+        if (!isTyping) {
+          isTyping = true;
+          document.getElementById("typingIndicator").classList.remove("hidden");
+        }
+
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          document.getElementById("typingIndicator").classList.add("hidden");
+          isTyping = false;
+        }, 3000);
+      }
+
+      // Poll for new messages and simulate typing occasionally
+      setInterval(() => {
+        render();
+        // Randomly show typing indicator (in real app, this would be from server)
+        if (Math.random() < 0.1) {
+          showTypingIndicator();
+        }
+      }, 1500);
+
+      render();
+    </script>
+  </body>
+</html>

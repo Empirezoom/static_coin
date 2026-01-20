@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Wallet — ORYX</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  </head>
+  <body class="bg-slate-50 min-h-screen">
+    <div class="max-w-6xl mx-auto p-6">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">My Wallet</h1>
+        <a href="/profile.html" class="text-indigo-600">Profile</a>
+      </div>
+
+      <!-- Balances -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gradient-to-r from-orange-400 to-orange-600 text-white p-6 rounded-lg shadow">
+          <div class="flex items-center gap-4">
+            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC" class="w-12 h-12">
+            <div>
+              <div class="text-sm opacity-80">BTC Balance</div>
+              <div class="text-2xl font-bold" id="balBtc">0.000</div>
+              <div class="text-sm opacity-80 mt-1" id="balBtcUsd">$0.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-6 rounded-lg shadow">
+          <div class="flex items-center gap-4">
+            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-12 h-12">
+            <div>
+              <div class="text-sm opacity-80">ETH Balance</div>
+              <div class="text-2xl font-bold" id="balEth">0.000</div>
+              <div class="text-sm opacity-80 mt-1" id="balEthUsd">$0.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-6 rounded-lg shadow">
+          <div class="flex items-center gap-4">
+            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" class="w-12 h-12">
+            <div>
+              <div class="text-sm opacity-80">USDT Balance</div>
+              <div class="text-2xl font-bold" id="balUsdt">0.00</div>
+              <div class="text-sm opacity-80 mt-1" id="balUsdtUsd">$0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded shadow">
+          <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC" class="w-6 h-6">
+            Bitcoin (BTC)
+          </h3>
+          <p class="text-sm font-semibold mb-4">Manage your BTC wallet</p>
+          <div class="space-y-2">
+            <a href="/btc.html" class="block w-full bg-orange-500 font-semibold text-center py-2 rounded">View Wallet</a>
+            <button id="receiveBtc" class="w-full bg-slate-200 font-semibold py-2 rounded">Copy Address</button>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded shadow">
+          <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-6 h-6">
+            Ethereum (ETH)
+          </h3>
+          <p class="text-sm font-semibold mb-4">Manage your ETH wallet</p>
+          <div class="space-y-2">
+            <a href="/eth.html" class="block w-full bg-blue-500 font-semibold text-center py-2 rounded">View Wallet</a>
+            <button id="receiveEth" class="w-full bg-slate-200 font-semibold py-2 rounded">Copy Address</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" class="w-6 h-6">
+            Tether (USDT)
+          </h3>
+          <p class="text-sm font-semibold mb-4">Manage your USDT wallet</p>
+          <div class="space-y-2">
+            <a href="/usdt.html" class="block w-full bg-green-500 text-center py-2 rounded font-semibold">View Wallet</a>
+            <button id="receiveUsdt" class="w-full bg-slate-200 font-semibold py-2 rounded">Copy Address</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deposit Section -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold mb-4">💰Deposit Funds</h3>
+        <p class="font-semibold mb-4">Make a deposit request to add funds to your account</p>
+        <a href="/deposit.html" class="inline-block w-full bg-indigo-600 font-semibold text-center py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200">
+          🚀 Make a Deposit
+        </a>
+      </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+      // populate wallet + requests
+      window.addEventListener("load", function () {
+        const user = ORYXAuth.currentUser();
+        if (!user) {
+          alert("Please login");
+          location.href = "/login.html";
+          return;
+        }
+        const btc = user.wallet?.btc || "1FfmbHfnpaZjKFvyi1okTjJJusN455paPH";
+        const eth = user.wallet?.eth || '0x' + ORYXAuth.randomBtcAddress().slice(0,40);
+        const usdt = user.wallet?.usdt || '0x' + ORYXAuth.randomBtcAddress().slice(0,40);
+        document.getElementById("balBtc").textContent = ORYXAuth.getBalance("btc");
+        document.getElementById("balEth").textContent = ORYXAuth.getBalance("eth");
+        document.getElementById("balUsdt").textContent = ORYXAuth.getBalance("usdt");
+        if (window.CryptoPrices && CryptoPrices.updateFiatDisplays) CryptoPrices.updateFiatDisplays();
+
+        // Receive buttons - copy address to clipboard
+        document.getElementById('receiveBtc').addEventListener('click', function(){
+          copyToClipboard(btc, this);
+        });
+        document.getElementById('receiveEth').addEventListener('click', function(){
+          copyToClipboard(eth, this);
+        });
+        document.getElementById('receiveUsdt').addEventListener('click', function(){
+          copyToClipboard(usdt, this);
+        });
+
+        function copyToClipboard(text, button) {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+              const orig = button.textContent;
+              button.textContent = 'Copied!';
+              button.classList.add('bg-green-500', 'text-white');
+              button.classList.remove('bg-slate-200', 'text-slate-700');
+              setTimeout(() => {
+                button.textContent = orig;
+                button.classList.remove('bg-green-500', 'text-white');
+                button.classList.add('bg-slate-200', 'text-slate-700');
+              }, 1500);
+            }).catch(() => alert('Copy failed'));
+          } else {
+            // fallback
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              document.execCommand('copy');
+              alert('Copied');
+            } catch (e) {
+              alert('Copy failed');
+            }
+            ta.remove();
+          }
+        }
+
+        const list = document.getElementById("requestsList");
+        list.innerHTML = "";
+        (user.depositRequests || []).slice(-3).forEach((r) => {
+          const li = document.createElement("li");
+          li.innerHTML = `<div class='p-2 border rounded'><b>${r.method}</b> — $${r.amount} — <span class='text-xs uppercase'>${r.status}</span></div>`;
+          list.appendChild(li);
+        });
+      });
+    </script>
+  </body>
+</html>
