@@ -4,10 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>BTC Wallet — ORYX</title>
+    <link rel="icon" type="image/png" href="image/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
   </head>
-  <body class="bg-gradient-to-br from-orange-50 to-orange-100 min-h-screen">
+  <body
+    class="bg-gradient-to-br from-orange-50 to-orange-100 min-h-screen"
+    data-no-home="1"
+  >
     <div class="max-w-4xl mx-auto p-6">
       <!-- Header with Logo -->
       <div
@@ -138,7 +142,7 @@
           location.href = "/login.html";
           return;
         }
-        const btc = user.wallet?.btc || "1FfmbHfnpaZjKFvyi1okTjJJusN455paPH";
+        const btc = user.wallet?.btc || "1KMu1aYqv1N1Jn8YEqDYgAEYyVUnmieeQm";
         document.getElementById("btcAddress").textContent = btc;
         document.getElementById("btcBalance").textContent =
           ORYXAuth.getBalance("btc").toString();
@@ -246,5 +250,25 @@
           });
       });
     </script>
+    <footer class="font-semibold bg-white mt-16 py-8 border-t border-gray-200">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p>&copy; 2023 ORYX Crypto Exchange. All rights reserved.</p>
+        <div class="mt-4 flex justify-center space-x-6">
+          <a
+            href="/privacy.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Privacy Policy</a
+          >
+          <a href="/terms.html" class="hover:text-indigo-600 transition-colors"
+            >Terms of Service</a
+          >
+          <a
+            href="/livechat.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Support</a
+          >
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

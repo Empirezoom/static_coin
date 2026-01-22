@@ -4,15 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Profile — ORYX</title>
+    <link rel="icon" type="image/png" href="image/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
   </head>
-  <body
-    class="min-h-screen bg-white flex items-center justify-center p-4"
-  >
+  <body class="min-h-screen bg-white flex items-center justify-center p-4">
     <div class="max-w-4xl mx-auto p-6">
       <!-- Header -->
       <div
@@ -44,14 +43,13 @@
       <!-- Profile Card -->
       <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
         <h2 class="text-2xl font-bold font-semibold mb-6 flex items-center">
-          <i class="fas fa-id-card mr-3 font-semibold"></i>Personal
-          Information
+          <i class="fas fa-id-card mr-3 font-semibold"></i>Personal Information
         </h2>
         <div id="profileBlock">
           <div class="animate-pulse">
-            <div class="h-4  w-1/4 mb-4"></div>
-            <div class="h-10  mb-4"></div>
-            <div class="h-10 "></div>
+            <div class="h-4 w-1/4 mb-4"></div>
+            <div class="h-10 mb-4"></div>
+            <div class="h-10"></div>
           </div>
         </div>
       </div>
@@ -71,7 +69,7 @@
 
       <!-- Recent Activity -->
       <div class="bg-white rounded-2xl shadow-xl p-8">
-        <h2 class="text-2xl  font-semibold mb-6 flex items-center">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center">
           <i class="fas fa-history mr-3 font-semibold"></i>Recent Activity
         </h2>
         <div class="space-y-4">
@@ -126,6 +124,18 @@
                 </label>
                 <input id='email' class='w-full border border-gray-300 rounded-lg px-4 py-3 bg-white font-semibold' value='${user.email || ""}' disabled />
               </div>
+              <div>
+                <label class="block text-sm font-medium font-semibold mb-2">
+                  <i class="fas fa-phone mr-2"></i>Phone Number
+                </label>
+                <input id='phone' class='w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300' value='${user.phone || ""}' />
+              </div>
+              <div>
+                <label class="block text-sm font-medium font-semibold mb-2">
+                  <i class="fas fa-globe mr-2"></i>Country
+                </label>
+                <input id='country' class='w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300' value='${user.country || ""}' />
+              </div>
             </div>
             <div class="flex gap-4">
               <button type="button" id='saveProfile' class='px-6 py-3 bg-gradient-to-r from-indigo-600 to-cyan-600 font-semibold rounded-lg hover:from-indigo-700 hover:to-cyan-700 transition-all duration-300 shadow-lg'>
@@ -169,7 +179,9 @@
           .getElementById("saveProfile")
           .addEventListener("click", function () {
             const name = document.getElementById("name").value.trim();
-            ORYXAuth.updateProfile({ name });
+            const phone = document.getElementById("phone").value.trim();
+            const country = document.getElementById("country").value.trim();
+            ORYXAuth.updateProfile({ name, phone, country });
             alert("Profile updated successfully!");
             renderProfile();
           });

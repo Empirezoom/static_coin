@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ORYX — Dashboard</title>
-    <link rel="icon" href="/image/favicon.svg" />
+    <link rel="icon" type="image/png" href="image/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <style type="text/tailwindcss">
@@ -164,7 +164,9 @@
             id="accountSummary"
             class="p-8 bg-white rounded-2xl shadow-2xl w-full border border-indigo-100"
           >
-            <h3 class="font-bold text-xl text-yellow-600 mb-4 flex items-center">
+            <h3
+              class="font-bold text-xl text-yellow-600 mb-4 flex items-center"
+            >
               <i class="fas fa-chart-line mr-2 text-indigo-600"></i>Account
               Summary
             </h3>
@@ -251,14 +253,12 @@
             </div>
             <h4 class="font-bold">Wallets</h4>
           </div>
-          <p class="text-sm font-semibold mb-4">
-            Bitcoin, Ethereum, USDT sample pages available.
-          </p>
+          <p class="text-sm font-semibold mb-4">Bitcoin, Ethereum, USDT .</p>
           <a
             href="/wallet.html"
             class="inline-flex items-center text-indigo-600 font-semibold hover:text-indigo-800 transition-colors duration-200"
           >
-            <span class="mr-1">👛</span>Open wallet →
+            <span class="mr-1">👛</span>Fund Wallets →
           </a>
         </div>
         <div
@@ -319,7 +319,7 @@
           </p>
           <a
             href="/change_password.html"
-            class="inline-flex items-center text-gray-600 font-semibold  transition-colors duration-200"
+            class="inline-flex items-center text-gray-600 font-semibold transition-colors duration-200"
           >
             <span class="mr-1">🛡️</span>Change password →
           </a>
@@ -348,11 +348,32 @@
             </div>
             <a
               href="/livechat.html"
-              class="px-4 py-2 bg-white rounded-lg font-semibold  transition-all duration-300 shadow-md flex items-center"
+              class="px-4 py-2 bg-white rounded-lg font-semibold transition-all duration-300 shadow-md flex items-center"
             >
               <span class="mr-2">💬</span>Start Chat
             </a>
           </div>
+        </div>
+        <div
+          class="bg-white p-6 rounded-xl shadow-lg border border-rose-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+        >
+          <div class="flex items-center mb-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3"
+            >
+              <span class="text-white text-lg">📤</span>
+            </div>
+            <h4 class="font-bold">Withdrawal History</h4>
+          </div>
+          <p class="text-sm font-semibold mb-4">
+            View your past withdrawal transactions.
+          </p>
+          <a
+            href="/withdrawal_history.html"
+            class="inline-flex items-center text-rose-600 font-semibold hover:text-rose-800 transition-colors duration-200"
+          >
+            <span class="mr-1">📊</span>View history →
+          </a>
         </div>
       </section>
     </main>
@@ -464,5 +485,25 @@
         } catch (e) {}
       })();
     </script>
+    <footer class="font-semibold bg-white mt-16 py-8 border-t border-gray-200">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p>&copy; 2023 ORYX Crypto Exchange. All rights reserved.</p>
+        <div class="mt-4 flex justify-center space-x-6">
+          <a
+            href="/privacy.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Privacy Policy</a
+          >
+          <a href="/terms.html" class="hover:text-indigo-600 transition-colors"
+            >Terms of Service</a
+          >
+          <a
+            href="/livechat.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Support</a
+          >
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

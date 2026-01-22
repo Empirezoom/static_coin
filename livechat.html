@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Live Chat — ORYX</title>
-    <link rel="icon" href="/image/favicon.svg" />
+    <link rel="icon" type="image/png" href="image/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
       @keyframes fadeInUp {
@@ -79,13 +79,11 @@
       }
     </style>
   </head>
-  <body
-    class="min-h-screen bg-white font-semibold"
-  >
+  <body class="min-h-screen bg-white font-semibold">
     <div class="min-h-screen flex flex-col">
       <!-- Header -->
       <header
-        class="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-10"
+        class="bg-white backdrop-blur-md border-b border-white/20 sticky top-0 z-10"
       >
         <div class="max-w-4xl mx-auto px-4 py-4">
           <div class="flex items-center justify-between">
@@ -119,9 +117,9 @@
       </header>
 
       <!-- Chat Container -->
-      <div class="flex-1 max-w-4xl mx-auto w-full px-4 py-6">
+      <div class="flex-1 max-w-5xl mx-auto w-full px-4 py-6 bg-black/5">
         <div
-          class="glass-effect rounded-2xl shadow-2xl h-[calc(100vh-200px)] flex flex-col overflow-hidden"
+          class="glass-effect rounded-2xl shadow-2xl h-[calc(100vh-200px)] flex flex-col overflow-hidden bg-white"
         >
           <!-- Chat Messages Area -->
           <div class="flex-1 p-6 overflow-hidden">
@@ -139,7 +137,7 @@
                 <h3 class="text-lg font-semibold font-semibold mb-2">
                   Welcome to ORYX Support!
                 </h3>
-                <p class="text-gray-600 max-w-md mx-auto">
+                <p class="font-semibold max-w-md mx-auto">
                   We're here to help with your crypto trading questions. Send us
                   a message and we'll respond shortly.
                 </p>
@@ -173,23 +171,18 @@
           </div>
 
           <!-- Message Input Area -->
-          <div
-            class="border-t border-gray-200 p-4 bg-white/50 backdrop-blur-sm"
-          >
+          <div class="border-t border-gray-200 p-4 bg-white backdrop-blur-sm">
             <form id="chatForm" class="flex flex-col space-y-3">
               <!-- File Preview Area -->
               <div
                 id="filePreview"
-                class="hidden bg-gray-50 rounded-xl p-3 border border-gray-200"
+                class="hidden bg-blue-400 rounded-xl p-3 border border-gray-200"
               >
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-3">
                     <span id="fileIcon" class="text-2xl">📎</span>
                     <div>
-                      <p
-                        id="filePreviewName"
-                        class="text-sm  font-semibold"
-                      ></p>
+                      <p id="filePreviewName" class="text-sm font-semibold"></p>
                       <p id="filePreviewSize" class="text-xs font-semibold"></p>
                     </div>
                   </div>
@@ -210,7 +203,7 @@
                     name="text"
                     placeholder="Type your message here... 💬"
                     rows="1"
-                    class="w-full resize-none border border-gray-300 rounded-xl px-4 py-3 pr-12 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm max-h-32"
+                    class="w-full resize-none border border-gray-300 rounded-xl px-4 py-3 pr-12 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white font-semibold backdrop-blur-sm max-h-32"
                     style="min-height: 48px"
                   ></textarea>
                   <button
@@ -417,7 +410,7 @@
           let avatar, bgColor, textColor;
           if (m.sender === "admin") {
             avatar = "🛟";
-            bgColor = "bg-gradient-to-r from-green-100 to-blue-100";
+            bgColor = "bg-white border-2 border-gray-200";
             textColor = "font-semibold";
           } else {
             avatar = "👤";
@@ -631,5 +624,25 @@
 
       render();
     </script>
+    <footer class="font-semibold bg-white mt-16 py-8 border-t border-gray-200">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p>&copy; 2023 ORYX Crypto Exchange. All rights reserved.</p>
+        <div class="mt-4 flex justify-center space-x-6">
+          <a
+            href="/privacy.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Privacy Policy</a
+          >
+          <a href="/terms.html" class="hover:text-indigo-600 transition-colors"
+            >Terms of Service</a
+          >
+          <a
+            href="/livechat.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Support</a
+          >
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

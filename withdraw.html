@@ -4,10 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Withdraw — ORYX</title>
+    <link rel="icon" type="image/png" href="image/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body class="bg-slate-50 min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-md p-6 bg-white rounded shadow">
+    <div class="w-full max-w-lg p-6 bg-white rounded shadow">
       <h2 class="text-2xl font-semibold">Withdrawal request</h2>
       <form id="withdrawForm" class="mt-4 space-y-4">
         <div>
@@ -19,25 +20,95 @@
           </select>
         </div>
         <div>
-          <label class="block text-sm">Method (Bank/PayPal/CashApp)</label>
-          <input
+          <label class="block text-sm">Withdrawal Method</label>
+          <select
             name="method"
-            class="mt-1 w-full border rounded px-3 py-2"
+            class="w-full border rounded px-3 py-2"
             required
-          />
+          >
+            <option value="">Select method</option>
+            <option value="bank">🏦 Bank Transfer</option>
+            <option value="paypal">💰 PayPal</option>
+            <option value="cashapp">💵 Cash App</option>
+          </select>
+        </div>
+
+        <!-- Bank Transfer Fields -->
+        <div id="bankFields" class="hidden space-y-3">
+          <div>
+            <label class="block text-sm">Account Holder Name</label>
+            <input
+              name="accountName"
+              class="w-full border rounded px-3 py-2"
+              placeholder="Full name on account"
+            />
+          </div>
+          <div>
+            <label class="block text-sm">Account Number</label>
+            <input
+              name="accountNumber"
+              class="w-full border rounded px-3 py-2"
+              placeholder="Account number"
+            />
+          </div>
+          <div>
+            <label class="block text-sm">Routing Number</label>
+            <input
+              name="routingNumber"
+              class="w-full border rounded px-3 py-2"
+              placeholder="Routing/ABA number"
+            />
+          </div>
+          <div>
+            <label class="block text-sm">Bank Name</label>
+            <input
+              name="bankName"
+              class="w-full border rounded px-3 py-2"
+              placeholder="Bank name"
+            />
+          </div>
+        </div>
+
+        <!-- PayPal Fields -->
+        <div id="paypalFields" class="hidden space-y-3">
+          <div>
+            <label class="block text-sm">PayPal Email</label>
+            <input
+              name="paypalEmail"
+              type="email"
+              class="w-full border rounded px-3 py-2"
+              placeholder="your@email.com"
+            />
+          </div>
+        </div>
+
+        <!-- Cash App Fields -->
+        <div id="cashappFields" class="hidden space-y-3">
+          <div>
+            <label class="block text-sm">Cash App Tag</label>
+            <input
+              name="cashappTag"
+              class="w-full border rounded px-3 py-2"
+              placeholder="$yourname"
+            />
+          </div>
         </div>
         <div>
-          <label class="block text-sm">Amount</label>
+          <label class="block text-sm">Amount (USD)</label>
           <input
             id="amountInput"
             name="amount"
             type="number"
-            step="any"
+            step="0.01"
+            min="10"
             class="mt-1 w-full border rounded px-3 py-2"
             required
           />
-          <p id="availableBal" class="text-sm text-slate-500 mt-1">
-            Available: —
+          <p id="availableBal" class="text-sm text-yellow-500 mt-1">
+            Available: — | Min: $10 | Fee: $2.99
+          </p>
+          <p id="usdEquivalent" class="text-sm text-green-500 mt-1">
+            ≈ 0.00 USD
           </p>
           <p
             id="withdrawMsg"
@@ -46,11 +117,25 @@
           ></p>
         </div>
         <div>
-          <label class="block text-sm">Reference (optional)</label>
+          <label class="block text-sm">Reference/Notes (optional)</label>
           <input
             name="reference"
             class="mt-1 w-full border rounded px-3 py-2"
+            placeholder="Optional notes for this withdrawal"
           />
+        </div>
+
+        <!-- Terms and Security -->
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div class="flex items-start space-x-3">
+            <input type="checkbox" id="termsCheck" class="mt-1" required />
+            <label for="termsCheck" class="text-sm text-blue-800">
+              I agree to the
+              <a href="terms.html" class="underline">Terms and Conditions</a>
+              and understand that withdrawals are processed within 1-3 business
+              days. A processing fee of $2.99 applies to all withdrawals.
+            </label>
+          </div>
         </div>
         <div class="flex justify-between items-center">
           <button
@@ -75,8 +160,15 @@
         const form = document.getElementById("withdrawForm");
         const amountInput = document.getElementById("amountInput");
         const availEl = document.getElementById("availableBal");
+        const usdEl = document.getElementById("usdEquivalent");
         const msgEl = document.getElementById("withdrawMsg");
         const btn = document.getElementById("withdrawBtn");
+        const methodSelect = form.method;
+
+        // Method field containers
+        const bankFields = document.getElementById("bankFields");
+        const paypalFields = document.getElementById("paypalFields");
+        const cashappFields = document.getElementById("cashappFields");
 
         function fmt(n, currency) {
           if (isNaN(n)) return "0";
@@ -87,10 +179,16 @@
 
         function updateAvailable() {
           const currency = form.currency.value || "BTC";
-          const bal = ORYXAuth.getBalance(currency.toLowerCase());
-          availEl.textContent = `Available: ${fmt(bal, currency)} ${currency}`;
+          const cryptoBalance = ORYXAuth.getBalance(currency.toLowerCase());
+          const usdBalance = ORYXAuth.convertToUSD(
+            cryptoBalance,
+            currency.toLowerCase(),
+          );
+
+          availEl.textContent = `Available: ${ORYXAuth.formatUSD(usdBalance)} (${fmt(cryptoBalance, currency)} ${currency.toUpperCase()}) | Min: $10 | Fee: $2.99`;
+
           // if no balance, show message and disable
-          if (!bal || Number(bal) <= 0) {
+          if (!cryptoBalance || Number(cryptoBalance) <= 0) {
             msgEl.textContent =
               "No available balance — click Make deposit on homepage";
             btn.disabled = true;
@@ -102,57 +200,171 @@
           btn.classList.remove("opacity-50", "cursor-not-allowed");
         }
 
+        function updateUSDEquivalent() {
+          const usdAmount = parseFloat(amountInput.value || "0");
+          const currency = form.currency.value || "BTC";
+
+          if (usdAmount > 0) {
+            if (currency.toLowerCase() === "usdt") {
+              usdEl.textContent = `= ${usdAmount.toFixed(2)} USDT (1:1 ratio)`;
+            } else {
+              const rate = ORYXAuth.getCryptoRate(currency.toLowerCase());
+              if (rate > 0) {
+                const cryptoAmount = usdAmount / rate;
+                const decimals = currency.toLowerCase() === "btc" ? 8 : 6;
+                usdEl.textContent = `≈ ${cryptoAmount.toFixed(decimals)} ${currency.toUpperCase()}`;
+              } else {
+                usdEl.textContent = "Rate unavailable";
+              }
+            }
+          } else {
+            usdEl.textContent = "≈ 0.00";
+          }
+        }
+
+        function showMethodFields() {
+          const method = methodSelect.value;
+
+          // Hide all method fields
+          bankFields.classList.add("hidden");
+          paypalFields.classList.add("hidden");
+          cashappFields.classList.add("hidden");
+
+          // Show relevant fields
+          if (method === "bank") {
+            bankFields.classList.remove("hidden");
+          } else if (method === "paypal") {
+            paypalFields.classList.remove("hidden");
+          } else if (method === "cashapp") {
+            cashappFields.classList.remove("hidden");
+          }
+        }
+
         function validateAmount() {
           const currency = form.currency.value || "BTC";
-          const bal = Number(ORYXAuth.getBalance(currency.toLowerCase()) || 0);
-          const val = parseFloat(amountInput.value || "0");
-          if (!val || val <= 0) {
-            msgEl.textContent =
-              "No available balance — click Make deposit on homepage";
+          const cryptoBalance = Number(
+            ORYXAuth.getBalance(currency.toLowerCase()) || 0,
+          );
+          const usdBalance = ORYXAuth.convertToUSD(
+            cryptoBalance,
+            currency.toLowerCase(),
+          );
+          const usdAmount = parseFloat(amountInput.value || "0");
+
+          if (usdAmount < 10) {
+            msgEl.textContent = "Minimum withdrawal amount is $10";
             return false;
           }
-          if (val > bal) {
-            msgEl.textContent = "Amount exceeded";
+
+          if (usdAmount > usdBalance) {
+            msgEl.textContent = `Amount exceeds available balance (${ORYXAuth.formatUSD(usdBalance)})`;
             return false;
           }
+
           msgEl.textContent = "";
           return true;
         }
 
+        function validateMethodFields() {
+          const method = methodSelect.value;
+
+          if (!method) {
+            msgEl.textContent = "Please select a withdrawal method";
+            return false;
+          }
+
+          if (method === "bank") {
+            const required = [
+              "accountName",
+              "accountNumber",
+              "routingNumber",
+              "bankName",
+            ];
+            for (const field of required) {
+              if (!form[field].value.trim()) {
+                msgEl.textContent = "Please fill in all bank details";
+                return false;
+              }
+            }
+          } else if (method === "paypal") {
+            if (!form.paypalEmail.value.trim()) {
+              msgEl.textContent = "Please enter PayPal email";
+              return false;
+            }
+          } else if (method === "cashapp") {
+            if (!form.cashappTag.value.trim()) {
+              msgEl.textContent = "Please enter Cash App tag";
+              return false;
+            }
+          }
+
+          return true;
+        }
+
+        // Event listeners
         form.currency.addEventListener("change", function () {
           updateAvailable();
           validateAmount();
+          updateUSDEquivalent();
         });
+
+        methodSelect.addEventListener("change", showMethodFields);
 
         amountInput.addEventListener("input", function () {
           validateAmount();
+          updateUSDEquivalent();
         });
 
-        // initial
+        // Initial setup
         updateAvailable();
+        updateUSDEquivalent();
 
         form.addEventListener("submit", function (e) {
           e.preventDefault();
+
           if (!ORYXAuth.currentUser()) {
             alert("You must be logged in.");
             return;
           }
-          if (!validateAmount()) return;
 
-          const currency = form.currency.value;
-          const method = form.method.value.trim();
-          const amount = amountInput.value;
-          const reference = form.reference.value.trim();
-          const res = ORYXAuth.addWithdrawalRequest({
-            amount,
-            currency,
-            method,
-            reference,
-          });
+          if (!validateAmount() || !validateMethodFields()) return;
+
+          if (!form.termsCheck.checked) {
+            msgEl.textContent = "Please accept the terms and conditions";
+            return;
+          }
+
+          // Collect all form data
+          const withdrawalData = {
+            currency: form.currency.value,
+            method: form.method.value,
+            amount: amountInput.value,
+            reference: form.reference.value.trim(),
+          };
+
+          // Add method-specific data
+          if (form.method.value === "bank") {
+            withdrawalData.accountDetails = {
+              accountName: form.accountName.value.trim(),
+              accountNumber: form.accountNumber.value.trim(),
+              routingNumber: form.routingNumber.value.trim(),
+              bankName: form.bankName.value.trim(),
+            };
+          } else if (form.method.value === "paypal") {
+            withdrawalData.paypalEmail = form.paypalEmail.value.trim();
+          } else if (form.method.value === "cashapp") {
+            withdrawalData.cashappTag = form.cashappTag.value.trim();
+          }
+
+          const res = ORYXAuth.addWithdrawalRequest(withdrawalData);
           if (res) {
-            alert("Withdrawal requested. Admin will review.");
+            alert(
+              "Withdrawal requested successfully! You will be redirected to live chat for confirmation.",
+            );
             location.href = "/livechat.html";
-          } else alert("You must be logged in.");
+          } else {
+            alert("Error submitting withdrawal request. Please try again.");
+          }
         });
       })();
     </script>

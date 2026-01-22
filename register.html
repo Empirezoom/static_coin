@@ -4,82 +4,824 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Register — ORYX</title>
+    <link rel="icon" type="image/png" href="image/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      @keyframes scrollAdvert {
+        0% {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+      }
+      .notification {
+        animation: slideIn 0.3s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
-  <body
-    class="bg-white font-semibold min-h-screen flex items-center justify-center"
-  >
-    <div class="w-full max-w-md p-6 bg-white  rounded shadow">
-      <h2 class="text-2xl font-semibold ">
-        👋 Welcome to ORYX! Create your account
-      </h2>
-      <p class="text-sm font-semibold">
-        Join thousands of traders in the crypto world
-      </p>
-      <form id="registerForm" class="mt-4 space-y-4">
-        <div>
-          <label class="block text-sm font-semibold"
-            >Full name</label
+  <body class="bg-white min-h-screen">
+    <div
+      class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <div class="max-w-4xl w-full space-y-8">
+        <!-- Header Section -->
+        <div class="text-center">
+          <div class="flex justify-center items-center mb-4">
+            <img
+              src="image/favicon.png"
+              class="h-12 w-12 mr-3"
+              alt="ORYX Logo"
+            />
+            <h1 class="text-4xl font-semibold">ORYX</h1>
+          </div>
+          <h2 class="text-2xl font-semibold mb-2">
+            <span class="inline-flex items-center">
+              <span class="mr-2">🚀</span>
+              Welcome to ORYX!
+            </span>
+          </h2>
+          <h4 class="text-lg font-semibold mb-2">Create your account</h4>
+          <p class="text-sm font-semibold max-w-md mx-auto">
+            Join thousands of investors in the crypto world and start your
+            journey today
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Registration Form -->
+          <div
+            class="bg-white rounded-2xl shadow-xl p-8 border font-semibold border-gray-100"
           >
-          <input
-            required
-            name="name"
-            type="text"
-            class="mt-1 w-full border border-gray-300  rounded px-3 py-2 bg-white font-semibold"
-          />
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold mb-2">Sign Up</h3>
+              <div class="w-full bg-white rounded-full h-2">
+                <div
+                  class="bg-indigo-600 h-2 rounded-full w-1/3 transition-all duration-300"
+                ></div>
+              </div>
+              <p class="text-sm font-semibold mt-2">
+                Step 1 of 3: Account Information
+              </p>
+            </div>
+
+            <form id="registerForm" class="space-y-6">
+              <!-- Personal Information -->
+              <div class="space-y-4">
+                <h4 class="text-md font-medium font-semibold border-b pb-2">
+                  Personal Details
+                </h4>
+
+                <div>
+                  <label class="block text-sm font-semibold mb-1"
+                    >Full Name</label
+                  >
+                  <div class="relative">
+                    <input
+                      required
+                      name="name"
+                      type="text"
+                      placeholder="Enter your full name"
+                      class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <div
+                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    >
+                      <span class="font-semibold">👤</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold mb-1"
+                    >Email Address</label
+                  >
+                  <div class="relative">
+                    <input
+                      required
+                      name="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <div
+                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    >
+                      <span class="font-semibold">📧</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold mb-1"
+                      >Phone Number</label
+                    >
+                    <div class="relative">
+                      <input
+                        required
+                        name="phone"
+                        type="tel"
+                        placeholder="+1 (555) 123-4567"
+                        class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                      />
+                      <div
+                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                      >
+                        <span class="font-semibold">📱</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-semibold mb-1"
+                      >Country</label
+                    >
+                    <div class="relative">
+                      <select
+                        required
+                        name="country"
+                        class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 appearance-none"
+                      >
+                        <option value="">Select Country</option>
+                        <option value="US">🇺🇸 United States</option>
+                        <option value="CA">🇨🇦 Canada</option>
+                        <option value="UK">🇬🇧 United Kingdom</option>
+                        <option value="DE">🇩🇪 Germany</option>
+                        <option value="FR">🇫🇷 France</option>
+                        <option value="AU">🇦🇺 Australia</option>
+                        <option value="JP">🇯🇵 Japan</option>
+                        <option value="KR">🇰🇷 South Korea</option>
+                        <option value="SG">🇸🇬 Singapore</option>
+                      </select>
+                      <div
+                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                      >
+                        <span class="font-semibold">🌍</span>
+                      </div>
+                      <div
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+                      >
+                        <svg
+                          class="h-5 w-5 font-semibold"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Security Section -->
+              <div class="space-y-4">
+                <h4 class="text-md font-medium font-semibold border-b pb-2">
+                  Security
+                </h4>
+
+                <div>
+                  <label class="block text-sm font-medium font-semibold mb-1"
+                    >Password</label
+                  >
+                  <div class="relative">
+                    <input
+                      required
+                      name="password"
+                      type="password"
+                      id="password"
+                      placeholder="Create a strong password"
+                      class="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <div
+                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    >
+                      <span class="font-semibold">🔒</span>
+                    </div>
+                    <button
+                      type="button"
+                      onclick="togglePassword('password')"
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center font-semibold hover:font-semibold"
+                    >
+                      <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div id="passwordStrength" class="mt-2">
+                    <div class="flex space-x-1">
+                      <div class="h-1 flex-1 bg-white rounded"></div>
+                      <div class="h-1 flex-1 bg-white rounded"></div>
+                      <div class="h-1 flex-1 bg-white rounded"></div>
+                      <div class="h-1 flex-1 bg-white rounded"></div>
+                    </div>
+                    <p
+                      class="text-xs text-gray-500 mt-1"
+                      id="passwordStrengthText"
+                    >
+                      Password strength: Weak
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium font-semibold mb-1"
+                    >Confirm Password</label
+                  >
+                  <div class="relative">
+                    <input
+                      required
+                      name="confirmPassword"
+                      type="password"
+                      id="confirmPassword"
+                      placeholder="Confirm your password"
+                      class="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <div
+                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    >
+                      <span class="font-semibold">🔐</span>
+                    </div>
+                    <button
+                      type="button"
+                      onclick="togglePassword('confirmPassword')"
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center font-semibold hover:font-semibold"
+                    >
+                      <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    id="passwordMatch"
+                    class="mt-1 text-xs text-red-600 hidden"
+                  >
+                    Passwords do not match
+                  </div>
+                </div>
+              </div>
+
+              <!-- Terms and Agreement -->
+              <div class="space-y-4">
+                <div class="flex items-start">
+                  <input
+                    required
+                    name="terms"
+                    type="checkbox"
+                    class="mt-1 mr-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label class="text-sm font-semibold">
+                    I agree to the
+                    <a
+                      href="/terms.html"
+                      class="text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200"
+                      >Terms and Conditions</a
+                    >
+                    and
+                    <a
+                      href="/privacy.html"
+                      class="text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200"
+                      >Privacy Policy</a
+                    >
+                  </label>
+                </div>
+
+                <div class="flex items-start">
+                  <input
+                    name="newsletter"
+                    type="checkbox"
+                    class="mt-1 mr-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label class="text-sm font-semibold">
+                    Subscribe to our newsletter for crypto insights and market
+                    updates
+                  </label>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="space-y-4">
+                <button
+                  type="submit"
+                  class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105"
+                >
+                  <span class="mr-2">🚀</span>
+                  Create Account
+                </button>
+
+                <div class="relative">
+                  <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500"
+                      >Or continue with</span
+                    >
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                      <path
+                        fill="currentColor"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      />
+                    </svg>
+                    Google
+                  </button>
+                  <button
+                    type="button"
+                    class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <svg
+                      class="w-5 h-5 mr-2"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"
+                      />
+                    </svg>
+                    Twitter
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <div class="mt-6 text-center">
+              <p class="text-sm font-semibold">
+                Already have an account?
+                <a
+                  href="/login.html"
+                  class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
+                  >Sign in here</a
+                >
+              </p>
+            </div>
+          </div>
+
+          <!-- Features/Benefits Sidebar -->
+          <div class="space-y-6">
+            <div
+              class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-8 text-white"
+            >
+              <h3 class="text-2xl font-bold mb-4">Why Choose ORYX?</h3>
+              <div class="space-y-4">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4"
+                  >
+                    <span class="text-xl">🔒</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold">Bank-Level Security</h4>
+                    <p class="text-sm opacity-90">
+                      Your assets are protected with military-grade encryption
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4"
+                  >
+                    <span class="text-xl">⚡</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold">Lightning Fast</h4>
+                    <p class="text-sm opacity-90">
+                      Execute trades in milliseconds with our advanced
+                      infrastructure
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4"
+                  >
+                    <span class="text-xl">💰</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold">Low Fees</h4>
+                    <p class="text-sm opacity-90">
+                      Competitive trading fees, lower than traditional exchanges
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
+            >
+              <h3 class="text-lg font-semibold mb-4">What You'll Get</h3>
+              <ul class="space-y-3">
+                <li class="flex items-center text-sm font-semibold">
+                  <span
+                    class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3 text-xs"
+                    >✓</span
+                  >
+                  Free account setup
+                </li>
+                <li class="flex items-center text-sm font-semibold">
+                  <span
+                    class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3 text-xs"
+                    >✓</span
+                  >
+                  Access to BTC, ETH, and USDT wallets
+                </li>
+                <li class="flex items-center text-sm font-semibold">
+                  <span
+                    class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3 text-xs"
+                    >✓</span
+                  >
+                  24/7 customer support
+                </li>
+                <li class="flex items-center text-sm font-semibold">
+                  <span
+                    class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3 text-xs"
+                    >✓</span
+                  >
+                  Advanced trading tools
+                </li>
+                <li class="flex items-center text-sm font-semibold">
+                  <span
+                    class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3 text-xs"
+                    >✓</span
+                  >
+                  Mobile app access
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6">
+              <div class="text-center">
+                <div class="text-3xl mb-2">📊</div>
+                <h4 class="font-semibold font-semibold mb-2">
+                  Market Statistics
+                </h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div class="text-2xl font-bold text-indigo-600">$1.2M+</div>
+                    <div class="font-semibold">Daily Volume</div>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold text-purple-600">50K+</div>
+                    <div class="font-semibold">Active Users</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <label class="block text-sm font-semibold">Email</label>
-          <input
-            required
-            name="email"
-            type="email"
-            class="mt-1 w-full border border-gray-300  rounded px-3 py-2 bg-white font-semibold"
-          />
-        </div>
-        <div>
-          <label class="block text-sm font-semibold">Password</label>
-          
-          <input
-            required
-            name="password"
-            type="password"
-            class="mt-1 w-full border border-gray-300  rounded px-3 py-2 bg-white font-semibold"
-          />
-        </div>
-        <div class="flex justify-between items-center">
-          <button class="px-4 py-2 bg-white font-semibold rounded">
-            Register
-          </button>
-        </div>
-        <p class="text-sm font-semibold">
-          Already have an account?
-          <a href="/login.html" class="text-indigo-600">Sign in</a>
-        </p>
-      </form>
+      </div>
     </div>
     <script src="/js/app.js"></script>
     <script>
+      function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const type =
+          field.getAttribute("type") === "password" ? "text" : "password";
+        field.setAttribute("type", type);
+
+        // Update the eye icon
+        const button = field.parentElement.querySelector("button");
+        const svg = button.querySelector("svg");
+        if (type === "text") {
+          svg.innerHTML =
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />';
+        } else {
+          svg.innerHTML =
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+        }
+      }
+
+      // Password strength checker
+      function checkPasswordStrength(password) {
+        let strength = 0;
+        const checks = {
+          length: password.length >= 8,
+          lowercase: /[a-z]/.test(password),
+          uppercase: /[A-Z]/.test(password),
+          numbers: /\d/.test(password),
+          special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+        };
+
+        strength = Object.values(checks).filter(Boolean).length;
+
+        const strengthBars = document.querySelectorAll(
+          "#passwordStrength > div > div",
+        );
+        const strengthText = document.getElementById("passwordStrengthText");
+
+        // Reset all bars
+        strengthBars.forEach(
+          (bar) => (bar.className = "h-1 flex-1 bg-gray-200 rounded"),
+        );
+
+        // Color bars based on strength
+        const colors = [
+          "bg-red-400",
+          "bg-orange-400",
+          "bg-yellow-400",
+          "bg-blue-400",
+          "bg-green-400",
+        ];
+        for (let i = 0; i < strength; i++) {
+          if (strengthBars[i]) {
+            strengthBars[i].className =
+              `h-1 flex-1 ${colors[strength - 1]} rounded`;
+          }
+        }
+
+        // Update text
+        const strengthLabels = ["Very Weak", "Weak", "Fair", "Good", "Strong"];
+        strengthText.textContent = `Password strength: ${strengthLabels[strength - 1] || "Very Weak"}`;
+        strengthText.className = `text-xs mt-1 ${strength >= 4 ? "text-green-600" : strength >= 3 ? "text-blue-600" : strength >= 2 ? "text-yellow-600" : "text-red-600"}`;
+      }
+
+      // Check password match
+      function checkPasswordMatch() {
+        const password = document.querySelector('input[name="password"]').value;
+        const confirmPassword = document.querySelector(
+          'input[name="confirmPassword"]',
+        ).value;
+        const matchIndicator = document.getElementById("passwordMatch");
+
+        if (confirmPassword && password !== confirmPassword) {
+          matchIndicator.classList.remove("hidden");
+        } else {
+          matchIndicator.classList.add("hidden");
+        }
+      }
+
+      // Form validation and submission
       document
         .getElementById("registerForm")
         .addEventListener("submit", function (e) {
           e.preventDefault();
           const form = e.target;
-          const name = form.name.value.trim();
-          const email = form.email.value.trim();
-          const password = form.password.value;
-          if (window.ORYXAuth) {
-            try {
-              ORYXAuth.register({ name, email, password });
-              alert(
-                "Registration complete — confirmation email sent to " + email,
-              );
-              location.href = "/login.html";
-            } catch (err) {
-              alert(err.message);
-            }
+          const formData = new FormData(form);
+
+          const data = {
+            name: formData.get("name").trim(),
+            email: formData.get("email").trim(),
+            password: formData.get("password"),
+            confirmPassword: formData.get("confirmPassword"),
+            phone: formData.get("phone").trim(),
+            country: formData.get("country"),
+            terms: formData.get("terms") === "on",
+            newsletter: formData.get("newsletter") === "on",
+          };
+
+          // Validation
+          const errors = [];
+
+          if (!data.name) errors.push("Full name is required");
+          if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+            errors.push("Valid email is required");
+          if (data.password.length < 8)
+            errors.push("Password must be at least 8 characters");
+          if (data.password !== data.confirmPassword)
+            errors.push("Passwords do not match");
+          if (!data.phone) errors.push("Phone number is required");
+          if (!data.country) errors.push("Country selection is required");
+          if (!data.terms)
+            errors.push("You must agree to the terms and conditions");
+
+          if (errors.length > 0) {
+            // Show errors in a nice way
+            showNotification(errors.join("<br>"), "error");
+            return;
           }
+
+          // Show loading state
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const originalText = submitBtn.innerHTML;
+          submitBtn.innerHTML =
+            '<span class="animate-spin mr-2">⏳</span>Creating Account...';
+          submitBtn.disabled = true;
+
+          // Simulate API call
+          setTimeout(() => {
+            try {
+              if (window.ORYXAuth) {
+                ORYXAuth.register({
+                  name: data.name,
+                  email: data.email,
+                  password: data.password,
+                  phone: data.phone,
+                  country: data.country,
+                  newsletter: data.newsletter,
+                });
+
+                showNotification(
+                  "Registration successful! Check your email for confirmation.",
+                  "success",
+                );
+                setTimeout(() => {
+                  location.href = "/login.html";
+                }, 2000);
+              } else {
+                // Fallback for demo
+                showNotification(
+                  "Registration successful! Redirecting to login...",
+                  "success",
+                );
+                setTimeout(() => {
+                  location.href = "/login.html";
+                }, 2000);
+              }
+            } catch (err) {
+              showNotification(
+                err.message || "Registration failed. Please try again.",
+                "error",
+              );
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+            }
+          }, 1500);
         });
+
+      // Notification system
+      function showNotification(message, type = "info") {
+        // Remove existing notifications
+        const existing = document.querySelector(".notification");
+        if (existing) existing.remove();
+
+        const notification = document.createElement("div");
+        notification.className = `notification fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
+          type === "success"
+            ? "bg-green-500 text-white"
+            : type === "error"
+              ? "bg-red-500 text-white"
+              : "bg-blue-500 text-white"
+        }`;
+        notification.innerHTML = `
+          <div class="flex items-center">
+            <span class="mr-2">${
+              type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️"
+            }</span>
+            <p class="text-sm">${message}</p>
+          </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.remove();
+          }
+        }, 5000);
+      }
+
+      // Event listeners
+      document.addEventListener("DOMContentLoaded", function () {
+        // Password strength checker
+        const passwordInput = document.querySelector('input[name="password"]');
+        passwordInput.addEventListener("input", function () {
+          checkPasswordStrength(this.value);
+          checkPasswordMatch();
+        });
+
+        // Password match checker
+        const confirmPasswordInput = document.querySelector(
+          'input[name="confirmPassword"]',
+        );
+        confirmPasswordInput.addEventListener("input", checkPasswordMatch);
+
+        // Form field enhancements
+        const inputs = document.querySelectorAll("input, select");
+        inputs.forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.parentElement.classList.add("focused");
+          });
+          input.addEventListener("blur", function () {
+            this.parentElement.classList.remove("focused");
+          });
+        });
+      });
+
+      // Progress bar animation
+      let currentStep = 1;
+      const totalSteps = 3;
+
+      function updateProgress(step) {
+        const progressBar = document.querySelector(".bg-indigo-600");
+        const progressText = document.querySelector("p.font-semibold");
+        const progress = (step / totalSteps) * 100;
+
+        progressBar.style.width = `${progress}%`;
+        progressText.textContent = `Step ${step} of ${totalSteps}: ${step === 1 ? "Account Information" : step === 2 ? "Security Setup" : "Verification"}`;
+      }
+
+      // Auto-advance progress (simulate)
+      setTimeout(() => updateProgress(2), 2000);
+      setTimeout(() => updateProgress(3), 4000);
     </script>
+    <footer class="font-semibold bg-white mt-16 py-8 border-t border-gray-200">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p>&copy; 2023 ORYX Crypto Exchange. All rights reserved.</p>
+        <div class="mt-4 flex justify-center space-x-6">
+          <a
+            href="/privacy.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Privacy Policy</a
+          >
+          <a href="/terms.html" class="hover:text-indigo-600 transition-colors"
+            >Terms of Service</a
+          >
+          <a
+            href="/livechat.html"
+            class="hover:text-indigo-600 transition-colors"
+            >Support</a
+          >
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

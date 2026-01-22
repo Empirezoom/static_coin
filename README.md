@@ -39,3 +39,5 @@ python -m http.server 8000
 Notes:
 
 - This is a frontend mock only — you will connect Django later to persist users, send emails, and verify uploads.
+
+

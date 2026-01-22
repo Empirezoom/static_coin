@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Login — ORYX</title>
-    <link rel="icon" href="/image/favicon.svg" />
+    <link rel="icon" type="image/png" href="image/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
       @keyframes fadeInUp {
@@ -31,9 +31,7 @@
       }
     </style>
   </head>
-  <body
-    class="min-h-screen bg-white  flex items-center justify-center p-4"
-  >
+  <body class="min-h-screen bg-white flex items-center justify-center p-4">
     <div class="fixed top-4 right-4 z-50">
       <button
         id="themeToggle"
@@ -48,32 +46,24 @@
         <div
           class="inline-flex items-center justify-center w-16 h-16 bg-white/20 dark:bg-gray-800/20 rounded-full backdrop-blur-sm mb-4"
         >
-          <span class="text-3xl">🦅</span>
+          <span class="text-3xl"
+            ><img src="image/favicon.png" alt="" srcset=""
+          /></span>
         </div>
-        <h1 class="text-3xl font-semibold mb-2">
-          Welcome Back
-        </h1>
-        <p class="font-semibold">
-          Sign in to your ORYX account
-        </p>
+        <h1 class="text-3xl font-semibold mb-2">Welcome Back</h1>
+        <p class="font-semibold">Sign in to your ORYX account</p>
       </div>
 
       <!-- Login Card -->
       <div class="glass-effect rounded-2xl shadow-2xl p-8">
         <div class="text-center mb-6">
-          <h2 class="text-2xl font-semibold">
-            🔐 Secure Login
-          </h2>
-          <p class="font-semibold mt-1">
-            Access your crypto portfolio
-          </p>
+          <h2 class="text-2xl font-semibold">🔐 Secure Login</h2>
+          <p class="font-semibold mt-1">Access your crypto portfolio</p>
         </div>
 
         <form id="loginForm" class="space-y-6">
           <div class="relative">
-            <label
-              class="block text-sm font-semibold mb-2"
-            >
+            <label class="block text-sm font-semibold mb-2">
               <span class="flex items-center">
                 <span class="mr-2">📧</span>
                 Email Address
@@ -85,15 +75,13 @@
                 name="email"
                 type="email"
                 placeholder="Enter your email"
-                class="w-full pl-4 pr-4 py-3 border border-gray-300 bg-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200  backdrop-blur-sm"
+                class="w-full pl-4 pr-4 py-3 border border-gray-300 bg-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
               />
             </div>
           </div>
 
           <div class="relative">
-            <label
-              class="block text-sm font-semibold mb-2"
-            >
+            <label class="block text-sm font-semibold mb-2">
               <span class="flex items-center">
                 <span class="mr-2">🔑</span>
                 Password
@@ -113,7 +101,7 @@
           <div class="flex items-center justify-between">
             <a
               href="/reset.html"
-              class="text-sm  hover:text-indigo-800  font-semibold transition-colors duration-200"
+              class="text-sm hover:text-indigo-800 font-semibold transition-colors duration-200"
             >
               Forgot password? 🔄
             </a>
@@ -135,7 +123,7 @@
             Don't have an account?
             <a
               href="/register.html"
-              class="hover:text-indigo-800  font-semibold transition-colors duration-200"
+              class="hover:text-indigo-800 font-semibold transition-colors duration-200"
             >
               Sign up here ✨
             </a>
@@ -143,9 +131,7 @@
         </div>
 
         <!-- Security Notice -->
-        <div
-          class="mt-6 p-4 bg-green-600 rounded-xl border border-green-200 "
-        >
+        <div class="mt-6 p-4 bg-green-600 rounded-xl border border-green-200">
           <div class="flex items-center">
             <span class="font-semibold mr-2">🛡️</span>
             <p class="text-sm font-semibold">
