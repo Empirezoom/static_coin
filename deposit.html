@@ -11,6 +11,7 @@
     <div class="max-w-6xl mx-auto p-6">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold">💰 Deposit Funds</h1>
+        <a href="/index.html" class="text-indigo-600">Home</a>
         <a href="/wallet.html" class="text-indigo-600">← Back to Wallet</a>
       </div>
 
@@ -86,7 +87,7 @@
         <div id="requestsList" class="space-y-3">
           <!-- Deposits will be populated here -->
         </div>
-        <div id="emptyState" class="text-center py-8 text-gray-500">
+        <div id="emptyState" class="text-center py-8 font-semibold">
           <div class="text-4xl mb-2">💰</div>
           <p>No deposit requests yet</p>
           <p class="text-sm">Your deposit history will appear here</p>
@@ -159,7 +160,7 @@
                 </div>
                 <div>
                   <div class="font-semibold">${r.method}</div>
-                  <div class="text-sm text-gray-500">${new Date(r.timestamp || Date.now()).toLocaleDateString()}</div>
+                  <div class="text-sm font-semibold text-yellow-600">${new Date(r.timestamp || Date.now()).toLocaleDateString()}</div>
                 </div>
               </div>
               <div class="text-right">
